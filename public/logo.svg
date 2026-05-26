@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 320" fill="none" role="img" aria-label="Cut The Lock logo">
+  <defs>
+    <!-- Metal gradient for body -->
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2e2e2e"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <!-- Shackle gradient -->
+    <linearGradient id="shackleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="100%" stop-color="#555555"/>
+    </linearGradient>
+    <!-- Rust/orange heart glow -->
+    <radialGradient id="heartGlow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#e8763c"/>
+      <stop offset="100%" stop-color="#C4633A"/>
+    </radialGradient>
+    <!-- Spark gradient -->
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD166"/>
+      <stop offset="100%" stop-color="#C4633A"/>
+    </linearGradient>
+    <!-- Body highlight -->
+    <linearGradient id="bodyHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glowHeart" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- ===== PADLOCK SHACKLE (left arm — intact) ===== -->
+  <path
+    d="M82 148 L82 80 Q82 28 140 28 Q198 28 198 80 L198 100"
+    stroke="url(#shackleGrad)" stroke-width="26" stroke-linecap="round"
+    fill="none" filter="url(#shadow)"
+  />
+  <!-- Shackle inner highlight -->
+  <path
+    d="M82 148 L82 80 Q82 36 140 36 Q190 36 190 80 L190 100"
+    stroke="rgba(255,255,255,0.06)" stroke-width="10" stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- ===== CUT MARKS on right arm of shackle ===== -->
+  <!-- Jagged cut — angled slash on right side at ~y=108 -->
+  <!-- Short stub from padlock body up to cut -->
+  <path
+    d="M198 148 L198 122"
+    stroke="url(#shackleGrad)" stroke-width="26" stroke-linecap="square"
+    fill="none"
+  />
+  <!-- Cut-face highlight (lighter face of cut metal) -->
+  <ellipse cx="198" cy="122" rx="13" ry="5" fill="#686868" transform="rotate(-8 198 122)"/>
+  <ellipse cx="198" cy="122" rx="10" ry="3.5" fill="#888" transform="rotate(-8 198 122)"/>
+
+  <!-- Sparks / cut flash -->
+  <g filter="url(#glowHeart)">
+    <!-- Main spark bolt -->
+    <polygon points="204,118 213,105 207,110 216,96 200,112 208,108" fill="url(#sparkGrad)" opacity="0.95"/>
+    <!-- Secondary sparks -->
+    <line x1="205" y1="120" x2="220" y2="114" stroke="#FFD166" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    <line x1="203" y1="117" x2="214" y2="126" stroke="#FFD166" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="207" y1="115" x2="222" y2="118" stroke="#C4633A" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+    <!-- Spark dots -->
+    <circle cx="219" cy="110" r="2" fill="#FFD166" opacity="0.9"/>
+    <circle cx="224" cy="118" r="1.5" fill="#C4633A" opacity="0.7"/>
+    <circle cx="215" cy="126" r="1.5" fill="#FFD166" opacity="0.6"/>
+  </g>
+
+  <!-- Cut-face on free end (floating stub with cut visible) -->
+  <path
+    d="M198 104 L198 90"
+    stroke="#555" stroke-width="26" stroke-linecap="square"
+    fill="none" opacity="0.7"
+  />
+  <!-- Slight rotation to free end for realism -->
+  <path
+    d="M197 104 L199 90"
+    stroke="url(#shackleGrad)" stroke-width="22" stroke-linecap="round"
+    fill="none" opacity="0.5"
+  />
+
+  <!-- ===== PADLOCK BODY ===== -->
+  <rect
+    x="46" y="142" width="188" height="142" rx="14"
+    fill="url(#bodyGrad)" filter="url(#shadow)"
+  />
+  <!-- Body top highlight stripe -->
+  <rect x="46" y="142" width="188" height="142" rx="14" fill="url(#bodyHighlight)"/>
+  <!-- Subtle rivet detail top-left -->
+  <circle cx="68" cy="164" r="5" fill="#333" stroke="#444" stroke-width="1"/>
+  <!-- Subtle rivet detail top-right -->
+  <circle cx="212" cy="164" r="5" fill="#333" stroke="#444" stroke-width="1"/>
+  <!-- Bottom rivets -->
+  <circle cx="68" cy="262" r="5" fill="#333" stroke="#444" stroke-width="1"/>
+  <circle cx="212" cy="262" r="5" fill="#333" stroke="#444" stroke-width="1"/>
+
+  <!-- Horizontal groove line across body -->
+  <line x1="56" y1="192" x2="224" y2="192" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>
+
+  <!-- ===== HEART inside body ===== -->
+  <g filter="url(#glowHeart)">
+    <!-- Heart glow halo -->
+    <path
+      d="M140 230 C140 230 100 205 100 183 C100 168 112 160 124 167 C129 170 135 176 140 183 C145 176 151 170 156 167 C168 160 180 168 180 183 C180 205 140 230 140 230 Z"
+      fill="#C4633A" opacity="0.25"
+      transform="scale(1.18) translate(-20.5 -28)"
+    />
+    <!-- Main heart -->
+    <path
+      d="M140 228 C140 228 104 207 104 185 C104 172 114 165 126 172 C131 175 136 181 140 187 C144 181 149 175 154 172 C166 165 176 172 176 185 C176 207 140 228 140 228 Z"
+      fill="url(#heartGlow)"
+    />
+    <!-- Heart inner highlight -->
+    <path
+      d="M128 175 Q136 172 140 180"
+      stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" fill="none"
+    />
+  </g>
+
+  <!-- ===== KEYHOLE (small, below heart) ===== -->
+  <circle cx="140" cy="244" r="6" fill="#0d0d0d"/>
+  <path d="M137 244 L137 255 L143 255 L143 244" fill="#0d0d0d"/>
+  <!-- Keyhole inner shine -->
+  <circle cx="138.5" cy="242.5" r="1.5" fill="rgba(255,255,255,0.15)"/>
+</svg>

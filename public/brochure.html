@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cut The Lock — Tri-Fold Brochure (Print-Ready)</title>
+<style>
+  /*
+   * CUT THE LOCK — TRI-FOLD BROCHURE
+   * Standard letter sheet: 8.5" × 11" (landscape)
+   * Folded into 3 equal panels: each 3.667" × 8.5"
+   *
+   * PRINT INSTRUCTIONS:
+   *   1. Open in Google Chrome
+   *   2. Ctrl+P / Cmd+P → Destination: Save as PDF
+   *   3. Paper size: Letter (8.5×11"), Orientation: Landscape
+   *   4. Margins: None, Scale: 100%
+   *   5. CHECK "Background graphics" ✓
+   *   6. Save — you'll get 2 pages:
+   *      Page 1 = INSIDE spread (panels 2, 3, 4)
+   *      Page 2 = OUTSIDE spread (panels 5, 6/mailing, 1/cover)
+   *
+   * FOLD INSTRUCTIONS (C-fold / Letter fold):
+   *   - Outside page face-down: fold right third (Front Cover) in first,
+   *     then fold left third (Back Left) over it.
+   *   - Result: Front Cover visible on front, Mailing panel visible on back.
+   *
+   * COLOR REFERENCE:
+   *   Black:  #000000   Gold: #D4A017   Gold Light: #F0C040
+   *   Rust:   #8B3A1A   White: #FFFFFF
+   */
+
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --black:      #000000;
+    --charcoal:   #0e0a04;
+    --dark:       #111111;
+    --gold:       #D4A017;
+    --gold-light: #F0C040;
+    --gold-dark:  #A07810;
+    --rust:       #8B3A1A;
+    --white:      #FFFFFF;
+    --cream:      #F2EDE6;
+    --gray-light: #E8E8E8;
+    --gray:       #AAAAAA;
+
+    --panel-w: calc(11in / 3);
+    --panel-h: 8.5in;
+    --pad:     0.3in;
+  }
+
+  /* ─── SCREEN WRAPPER ─── */
+  html, body {
+    background: #2e2e2e;
+    font-family: 'Open Sans', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    color: var(--white);
+  }
+
+  /* ─── SCREEN LABELS ─── */
+  .screen-label {
+    background: #111;
+    color: #888;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    padding: 7px 20px;
+    width: 11in;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* ─── SPREAD (full 11×8.5 sheet) ─── */
+  .spread {
+    width: 11in;
+    height: 8.5in;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+
+  .spread:last-of-type {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* ─── PANEL ─── */
+  .panel {
+    width: var(--panel-w);
+    height: var(--panel-h);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* Fold guides (screen only) */
+  .fold-guide {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 200, 100, 0.3);
+    z-index: 9999;
+    pointer-events: none;
+  }
+  .fold-guide-1 { left: var(--panel-w); }
+  .fold-guide-2 { left: calc(var(--panel-w) * 2); }
+
+  /* ─── PRINT STYLES ─── */
+  @media print {
+    @page {
+      size: 11in 8.5in;
+      margin: 0;
+    }
+
+    html, body {
+      background: transparent !important;
+      display: block;
+      padding: 0;
+      gap: 0;
+    }
+
+    .screen-label,
+    .instructions,
+    .fold-guide,
+    .safe-guide {
+      display: none !important;
+    }
+
+    .spread {
+      page-break-inside: avoid;
+    }
+
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     SHARED COMPONENTS
+  ════════════════════════════════════════════════════════════ */
+
+  .gold-divider {
+    width: 0.55in;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 0.18in;
+  }
+
+  .eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.1in;
+  }
+
+  .section-heading {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.1in;
+  }
+
+  .section-heading em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  .body-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.55;
+  }
+
+  .body-text strong {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* Numbered step */
+  .step-row {
+    display: flex;
+    gap: 0.12in;
+    margin-bottom: 0.14in;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: rgba(212, 160, 23, 0.25);
+    line-height: 1;
+    min-width: 0.22in;
+    flex-shrink: 0;
+    margin-top: -2px;
+  }
+
+  .step-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(230, 230, 230, 0.88);
+    line-height: 1.5;
+  }
+
+  .step-text strong {
+    color: var(--white);
+    display: block;
+    font-size: 9pt;
+    margin-bottom: 2px;
+  }
+
+  /* Gold bullet list */
+  .bullet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1in;
+  }
+
+  .bullet-item {
+    display: flex;
+    gap: 0.09in;
+    align-items: flex-start;
+  }
+
+  .bullet-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--gold);
+    border-radius: 1px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .bullet-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.5;
+  }
+
+  .bullet-text strong {
+    color: var(--white);
+  }
+
+  /* Service card */
+  .service-card {
+    background: rgba(212, 160, 23, 0.07);
+    border: 1px solid rgba(212, 160, 23, 0.25);
+    border-radius: 4px;
+    padding: 0.14in 0.15in;
+    margin-bottom: 0.14in;
+  }
+
+  .service-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.06in;
+  }
+
+  .service-price {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.07in;
+    font-style: italic;
+  }
+
+  /* CTA bar */
+  .cta-bar {
+    background: linear-gradient(90deg, rgba(212,160,23,0.15), rgba(212,160,23,0.05));
+    border-top: 1px solid rgba(212,160,23,0.3);
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    padding: 0.1in var(--pad);
+    text-align: center;
+  }
+
+  .cta-action {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .cta-url {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .cta-url span { color: var(--gold); }
+
+  /* QR wrap */
+  .qr-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .qr-frame {
+    background: var(--white);
+    border-radius: 3px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-frame img {
+    display: block;
+  }
+
+  .qr-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  /* Tagline strip */
+  .tagline-strip {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 7.5pt;
+    font-weight: 400;
+    color: rgba(212, 160, 23, 0.55);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Lock SVG container */
+  .lock-svg {
+    display: block;
+  }
+
+  /* Checkmark list */
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1in;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 0.09in;
+    align-items: flex-start;
+  }
+
+  .check-icon {
+    font-family: 'Oswald', sans-serif;
+    font-size: 9pt;
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+    line-height: 1.3;
+  }
+
+  .check-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.4;
+  }
+
+  /* ─── INSTRUCTION PANEL (screen only) ─── */
+  .instructions {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 22px 28px;
+    width: 11in;
+    font-family: monospace;
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.7;
+  }
+
+  .instructions h3 {
+    color: #D4A017;
+    font-size: 13px;
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .instructions li { margin-left: 16px; margin-bottom: 3px; }
+  .instructions code { color: #F0C040; background: rgba(212,160,23,0.1); padding: 1px 5px; border-radius: 3px; }
+  .instructions .ok  { color: rgba(100,220,100,0.8); }
+  .instructions .warn { color: rgba(255,140,60,0.9); }
+
+  /* ════════════════════════════════════════════════════════════
+     PAGE 1 — INSIDE SPREAD
+     Left-to-right: [Panel 2: How It Works] [Panel 3: Services] [Panel 4: Marketplace]
+  ════════════════════════════════════════════════════════════ */
+
+  /* ─── PANEL 2: INSIDE LEFT — "How It Works" ─── */
+  #p2 {
+    background: #0a0600;
+  }
+
+  #p2 .bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(212,160,23,0.12) 0%, transparent 60%),
+      linear-gradient(180deg, #110800 0%, #000000 100%);
+    z-index: 0;
+  }
+
+  #p2 .content {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    z-index: 2;
+  }
+
+  #p2 .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.2in;
+  }
+
+  #p2 .logo-text {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  #p2 .logo-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(212,160,23,0.5);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Horizontal gold rule */
+  #p2 .h-rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), rgba(212,160,23,0.1));
+    margin-bottom: 0.2in;
+  }
+
+  /* Steps section */
+  #p2 .steps-heading {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 0.06in;
+  }
+
+  #p2 .steps-heading em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  #p2 .steps-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.22in;
+    line-height: 1.4;
+  }
+
+  /* Recovery DB box */
+  #p2 .recovery-box {
+    background: rgba(212,160,23,0.06);
+    border: 1px solid rgba(212,160,23,0.25);
+    border-left: 3px solid var(--gold);
+    border-radius: 3px;
+    padding: 0.12in 0.14in;
+    margin-top: 0.2in;
+  }
+
+  #p2 .recovery-box-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.08in;
+  }
+
+  /* Bottom quote */
+  #p2 .quote-strip {
+    position: absolute;
+    bottom: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+  }
+
+  #p2 .quote-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(212,160,23,0.6);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.45;
+    border-top: 1px solid rgba(212,160,23,0.15);
+    padding-top: 0.1in;
+  }
+
+  /* ─── PANEL 3: INSIDE CENTER — Services ─── */
+  #p3 {
+    background: #0d0d0d;
+    border-left: 1px solid rgba(212,160,23,0.08);
+    border-right: 1px solid rgba(212,160,23,0.08);
+  }
+
+  #p3 .bg-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2.2in;
+    background: linear-gradient(160deg, #1a0800 0%, #0d0500 50%, #0d0d0d 100%);
+    z-index: 0;
+  }
+
+  #p3 .content {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    bottom: 0.25in;
+    z-index: 2;
+  }
+
+  #p3 .panel-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.07in;
+  }
+
+  #p3 .panel-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 0.05in;
+  }
+
+  #p3 .panel-title em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  #p3 .panel-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.22in;
+  }
+
+  #p3 .bottom-cta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(212,160,23,0.06) 100%);
+    border-top: 1px solid rgba(212,160,23,0.2);
+    padding: 0.12in var(--pad);
+    text-align: center;
+  }
+
+  #p3 .bottom-cta .cta-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 4px;
+    font-style: italic;
+  }
+
+  #p3 .bottom-cta .cta-link {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.03em;
+  }
+
+  #p3 .bottom-cta .cta-link span { color: var(--gold); }
+
+  /* ─── PANEL 4: INSIDE RIGHT — Marketplace ─── */
+  #p4 {
+    background: #080400;
+  }
+
+  #p4 .bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 15%, rgba(180,100,20,0.18) 0%, transparent 55%),
+      linear-gradient(180deg, #140a00 0%, #050200 100%);
+    z-index: 0;
+  }
+
+  #p4 .content {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    z-index: 2;
+  }
+
+  #p4 .panel-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.07in;
+  }
+
+  #p4 .panel-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 0.18in;
+  }
+
+  #p4 .panel-title em { color: var(--gold); font-style: normal; }
+
+  #p4 .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.07in;
+    margin-bottom: 0.18in;
+  }
+
+  #p4 .cat-tile {
+    background: rgba(212,160,23,0.07);
+    border: 1px solid rgba(212,160,23,0.18);
+    border-radius: 3px;
+    padding: 0.08in 0.04in;
+    text-align: center;
+  }
+
+  #p4 .cat-emoji {
+    font-size: 13pt;
+    line-height: 1;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  #p4 .cat-name {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em;
+    display: block;
+  }
+
+  /* Mission statement */
+  #p4 .mission-strip {
+    background: rgba(139,58,26,0.15);
+    border: 1px solid rgba(139,58,26,0.35);
+    border-radius: 3px;
+    padding: 0.1in 0.13in;
+    margin-bottom: 0.18in;
+  }
+
+  #p4 .mission-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(240, 220, 200, 0.8);
+    line-height: 1.5;
+    font-style: italic;
+    text-align: center;
+  }
+
+  #p4 .bottom-cta-row {
+    position: absolute;
+    bottom: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  #p4 .cta-block {
+    flex: 1;
+    padding-right: 0.12in;
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     PAGE 2 — OUTSIDE SPREAD
+     Left-to-right: [Panel 5: B2B] [Panel 6: Mailing] [Panel 1: Front Cover]
+  ════════════════════════════════════════════════════════════ */
+
+  /* ─── PANEL 5: BACK LEFT — Storage Operators (B2B) ─── */
+  #p5 {
+    background: #0a0c0e;
+  }
+
+  #p5 .bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(212,160,23,0.08) 0%, transparent 60%),
+      linear-gradient(180deg, #0e1014 0%, #000000 100%);
+    z-index: 0;
+  }
+
+  #p5 .content {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    z-index: 2;
+  }
+
+  #p5 .b2b-badge {
+    display: inline-block;
+    background: rgba(212,160,23,0.12);
+    border: 1px solid rgba(212,160,23,0.3);
+    color: var(--gold);
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 0.12in;
+  }
+
+  #p5 .panel-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.08;
+    margin-bottom: 0.06in;
+  }
+
+  #p5 .panel-title em { color: var(--gold); font-style: normal; }
+
+  #p5 .panel-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.22in;
+    line-height: 1.5;
+  }
+
+  #p5 .benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1in;
+    margin-bottom: 0.22in;
+  }
+
+  #p5 .benefit-item {
+    display: flex;
+    gap: 0.1in;
+    align-items: flex-start;
+  }
+
+  #p5 .benefit-icon {
+    font-size: 12pt;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  #p5 .benefit-content {}
+
+  #p5 .benefit-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  #p5 .benefit-desc {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(220,220,220,0.7);
+    line-height: 1.45;
+  }
+
+  #p5 .contact-box {
+    background: rgba(212,160,23,0.06);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 3px;
+    padding: 0.13in 0.15in;
+    margin-top: auto;
+  }
+
+  #p5 .contact-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6.5pt;
+    color: rgba(212,160,23,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.06in;
+  }
+
+  #p5 .contact-url {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  #p5 .contact-url span { color: var(--gold); }
+
+  #p5 .contact-email {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ─── PANEL 6: BACK CENTER — Mailing Panel ─── */
+  #p6 {
+    background: #050300;
+    border-left: 1px solid rgba(212,160,23,0.08);
+    border-right: 1px solid rgba(212,160,23,0.08);
+  }
+
+  #p6 .bg-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(212,160,23,0.08) 0%, transparent 65%);
+    z-index: 0;
+  }
+
+  #p6 .content {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #p6 .brand-block {
+    text-align: center;
+    margin-bottom: 0.2in;
+  }
+
+  #p6 .brand-name {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 22pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  #p6 .brand-tagline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    color: rgba(212,160,23,0.55);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  #p6 .brand-url {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8.5pt;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+    display: block;
+  }
+
+  #p6 .brand-url span { color: var(--gold-light); }
+
+  #p6 .brand-location {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+    display: block;
+  }
+
+  #p6 .checks-block {
+    background: rgba(212,160,23,0.05);
+    border: 1px solid rgba(212,160,23,0.18);
+    border-radius: 4px;
+    padding: 0.12in 0.16in;
+    margin-bottom: 0.2in;
+    width: 100%;
+  }
+
+  #p6 .check-row {
+    display: flex;
+    align-items: center;
+    gap: 0.09in;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(212,160,23,0.08);
+  }
+
+  #p6 .check-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  #p6 .check-mark {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10pt;
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  #p6 .check-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.35;
+  }
+
+  /* Mailing label area */
+  #p6 .mail-area {
+    width: 100%;
+    border: 1px dashed rgba(212,160,23,0.2);
+    border-radius: 4px;
+    padding: 0.12in;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #p6 .mail-label-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    color: rgba(212,160,23,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+
+  /* Indicia placeholder */
+  #p6 .indicia {
+    position: absolute;
+    top: var(--pad);
+    right: var(--pad);
+    width: 1.1in;
+    height: 0.75in;
+    border: 1px dashed rgba(212,160,23,0.25);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+
+  #p6 .indicia-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5pt;
+    color: rgba(212,160,23,0.3);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+  }
+
+  /* Return address */
+  #p6 .return-address {
+    position: absolute;
+    top: var(--pad);
+    left: var(--pad);
+    z-index: 3;
+  }
+
+  #p6 .return-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(212,160,23,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+  }
+
+  #p6 .return-lines {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.65;
+  }
+
+  /* ─── PANEL 1: FRONT COVER ─── */
+  #p1 {
+    background: var(--black);
+  }
+
+  #p1 .bg-diagonal {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 65%;
+    background: linear-gradient(155deg, #1a0800 0%, #2d1200 40%, #050200 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+    z-index: 1;
+  }
+
+  #p1 .bg-glow {
+    position: absolute;
+    top: -0.4in;
+    left: -0.3in;
+    width: 4in;
+    height: 4in;
+    background: radial-gradient(circle at 35% 25%, rgba(212,160,23,0.16) 0%, transparent 60%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #p1 .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    padding: var(--pad);
+  }
+
+  /* Lock SVG top-right */
+  #p1 .lock-pos {
+    position: absolute;
+    top: 0.2in;
+    right: 0.25in;
+    z-index: 10;
+  }
+
+  #p1 .logo-area {
+    margin-bottom: 0.25in;
+  }
+
+  #p1 .logo-name {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+    display: block;
+  }
+
+  #p1 .logo-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(212,160,23,0.5);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  #p1 .hook-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  #p1 .hook-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.12in;
+  }
+
+  #p1 .hook-headline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 26pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.1in;
+  }
+
+  #p1 .hook-headline em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  #p1 .hook-divider {
+    width: 0.5in;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 0.14in;
+  }
+
+  #p1 .hook-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    font-weight: 600;
+    color: rgba(230,230,230,0.85);
+    line-height: 1.5;
+    margin-bottom: 0.06in;
+  }
+
+  #p1 .hook-sub2 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(200,200,200,0.55);
+    line-height: 1.5;
+  }
+
+  #p1 .tagline-row {
+    display: block;
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    color: rgba(212,160,23,0.55);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0.1in 0;
+    border-top: 1px solid rgba(212,160,23,0.12);
+    border-bottom: 1px solid rgba(212,160,23,0.12);
+    margin-bottom: 0.18in;
+  }
+
+  #p1 .bottom-qr-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  #p1 .bottom-url-block {}
+
+  #p1 .url-action {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  #p1 .url-main {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+  }
+
+  #p1 .url-main span { color: var(--gold); }
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     PRINT INSTRUCTIONS (screen only)
+════════════════════════════════════════════════════════════ -->
+<div class="instructions">
+  <h3>🖨️ How to Print / Export PDF</h3>
+  <ul>
+    <li>Open in <strong>Google Chrome</strong></li>
+    <li><code>Ctrl+P</code> / <code>Cmd+P</code> → Destination: <code>Save as PDF</code></li>
+    <li>Paper size: <code>Letter (8.5×11")</code> · Orientation: <code>Landscape</code></li>
+    <li>Margins: <code>None</code> · Scale: <code>100%</code></li>
+    <li>✓ Check <code>Background graphics</code></li>
+    <li>Click <strong>Save</strong> — exports 2 pages</li>
+  </ul>
+  <p style="margin-top:10px">
+    <span class="ok">Page 1:</span> <strong>INSIDE spread</strong> — "How It Works" · Services · Marketplace<br>
+    <span class="ok">Page 2:</span> <strong>OUTSIDE spread</strong> — B2B / Operators · Mailing Panel · Front Cover
+  </p>
+  <p style="margin-top:8px">
+    <span class="warn">Fold guide:</span> C-fold (letter fold). Outside page face-down. Fold right third (Front Cover) inward first, then fold left third over it. Front Cover shows on front; Mailing panel shows on back.
+  </p>
+  <p style="margin-top:8px" style="color:#888">Orange dashed lines = fold guides (screen only, not printed). Send PDF to print vendor — ask for CMYK conversion.</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 1 — INSIDE SPREAD
+     [Panel 2: How It Works] [Panel 3: Services] [Panel 4: Marketplace]
+════════════════════════════════════════════════════════════ -->
+<div class="screen-label">PAGE 1 — INSIDE SPREAD &nbsp;|&nbsp; Print landscape, margins none</div>
+
+<div class="spread" id="inside-spread">
+  <!-- Fold guides (screen only) -->
+  <div class="fold-guide fold-guide-1"></div>
+  <div class="fold-guide fold-guide-2"></div>
+
+  <!-- ══ PANEL 2: INSIDE LEFT — How It Works ══ -->
+  <div class="panel" id="p2">
+    <div class="bg-glow"></div>
+    <div class="content">
+
+      <div class="top-bar">
+        <div>
+          <div class="logo-text">Cut The Lock</div>
+          <div class="logo-sub">Storage Recovery · Marketplace</div>
+        </div>
+      </div>
+
+      <div class="h-rule"></div>
+
+      <div class="steps-heading">How It<br><em>Works</em></div>
+      <div class="steps-sub">From abandoned unit to reunited family — here's the process.</div>
+
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>We purchase the unit at auction</strong>
+          When a storage facility auctions off an abandoned unit, we bid and buy — taking full ownership of the contents.
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>We catalog every item</strong>
+          Personal belongings, photos, documents, heirlooms — every sentimental item is photographed and logged in our recovery database.
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Former tenants search or submit a claim</strong>
+          You can search our recovery database anytime or submit a claim. It's free — no hoops, no hassle.
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <strong>We reunite you with what matters most</strong>
+          After simple verification, sentimental and personal items are returned at absolutely no cost to you.
+        </div>
+      </div>
+
+      <div class="recovery-box">
+        <div class="recovery-box-title">🔍 Recovery Database — Free</div>
+        <div class="bullet-list">
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Search at <strong>cutthelock.com/recover?utm_source=print&amp;utm_medium=eddm&amp;utm_campaign=local_awareness</strong></div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Sentimental &amp; personal items returned at <strong>NO COST</strong></div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Simple claim process with respectful verification</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-strip">
+        <div class="quote-text">
+          "Not everything in storage was meant to be lost."
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /panel 2 -->
+
+  <!-- ══ PANEL 3: INSIDE CENTER — Services for Former Tenants ══ -->
+  <div class="panel" id="p3">
+    <div class="bg-stripe"></div>
+    <div class="content">
+
+      <div class="panel-eyebrow">For Former Tenants</div>
+      <div class="panel-title">Reclaim<br><em>What's Yours</em></div>
+      <div class="panel-sub">You don't have to walk away empty-handed.</div>
+
+      <div class="gold-divider"></div>
+
+      <!-- Storage Locker Buy Back -->
+      <div class="service-card">
+        <div class="service-title">🔑 Storage Locker Buy Back</div>
+        <div class="service-price">Our purchase cost + 25% fee</div>
+        <div class="bullet-list">
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Buy back your <strong>entire storage unit</strong></div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Fee covers labor, gas, supplies &amp; overhead</div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Available <strong>before items are sorted</strong> or listed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POPP -->
+      <div class="service-card">
+        <div class="service-title">⭐ Previous Owner's Priority Picking</div>
+        <div class="service-price">Fair resale value — you pick what you want</div>
+        <div class="bullet-list">
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Don't want the full unit? <strong>Cherry-pick</strong> specific items</div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text"><strong>First access</strong> — before anything hits the public marketplace</div>
+          </div>
+          <div class="bullet-item">
+            <div class="bullet-dot"></div>
+            <div class="bullet-text">Priced at fair resale value — transparent, no surprises</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-cta">
+        <div class="cta-label">Ready to reclaim what's yours?</div>
+        <div class="cta-link">cutthelock<span>.com/recover?utm_source=print&amp;utm_medium=eddm&amp;utm_campaign=local_awareness</span></div>
+      </div>
+
+    </div>
+  </div><!-- /panel 3 -->
+
+  <!-- ══ PANEL 4: INSIDE RIGHT — Marketplace ══ -->
+  <div class="panel" id="p4">
+    <div class="bg-glow"></div>
+    <div class="content">
+
+      <div class="panel-eyebrow">Shop the Marketplace</div>
+      <div class="panel-title">Curated Finds<br>from Real<br><em>Auctions</em></div>
+
+      <div class="category-grid">
+        <div class="cat-tile">
+          <span class="cat-emoji">🪑</span>
+          <span class="cat-name">Furniture</span>
+        </div>
+        <div class="cat-tile">
+          <span class="cat-emoji">📻</span>
+          <span class="cat-name">Electronics</span>
+        </div>
+        <div class="cat-tile">
+          <span class="cat-emoji">🎨</span>
+          <span class="cat-name">Art &amp; Décor</span>
+        </div>
+        <div class="cat-tile">
+          <span class="cat-emoji">👗</span>
+          <span class="cat-name">Clothing</span>
+        </div>
+        <div class="cat-tile">
+          <span class="cat-emoji">🔧</span>
+          <span class="cat-name">Tools</span>
+        </div>
+        <div class="cat-tile">
+          <span class="cat-emoji">💎</span>
+          <span class="cat-name">Vintage</span>
+        </div>
+      </div>
+
+      <div class="bullet-list" style="margin-bottom: 0.16in;">
+        <div class="bullet-item">
+          <div class="bullet-dot"></div>
+          <div class="bullet-text"><strong>Secondhand finds</strong> from real storage auctions</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-dot"></div>
+          <div class="bullet-text">Vintage, electronics, furniture, clothing &amp; more</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-dot"></div>
+          <div class="bullet-text">Priced well below retail</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-dot"></div>
+          <div class="bullet-text"><strong>Every purchase</strong> supports the recovery mission</div>
+        </div>
+      </div>
+
+      <div class="mission-strip">
+        <div class="mission-text">
+          "When you shop here, you help fund the work of returning irreplaceable things to the people who lost them."
+        </div>
+      </div>
+
+      <div class="bottom-cta-row">
+        <div class="cta-block">
+          <span class="cta-action">Browse &amp; Shop Online</span>
+          <div class="cta-url">cutthelock<span>.com/listings?utm_source=print&amp;utm_medium=eddm&amp&utm_campaign=local_awareness</span></div>
+        </div>
+        <div class="qr-wrap">
+          <div class="qr-frame">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=https%3A%2F%2Fcutthelock.com%2Flistings%3Futm_source%3Dprint%26utm_medium%3Deddm%26utm_campaign%3Dlocal_awareness"
+              alt="QR: cutthelock.com/listings"
+              width="80" height="80"
+              loading="eager"
+            />
+          </div>
+          <div class="qr-label">Scan to Shop</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /panel 4 -->
+
+</div><!-- /inside-spread -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 2 — OUTSIDE SPREAD
+     [Panel 5: B2B / Operators] [Panel 6: Mailing] [Panel 1: Front Cover]
+════════════════════════════════════════════════════════════ -->
+<div class="screen-label">PAGE 2 — OUTSIDE SPREAD &nbsp;|&nbsp; Left = Back Left · Center = Mailing Panel · Right = FRONT COVER</div>
+
+<div class="spread" id="outside-spread">
+  <!-- Fold guides (screen only) -->
+  <div class="fold-guide fold-guide-1"></div>
+  <div class="fold-guide fold-guide-2"></div>
+
+  <!-- ══ PANEL 5: BACK LEFT — For Storage Facility Operators ══ -->
+  <div class="panel" id="p5">
+    <div class="bg-glow"></div>
+    <div class="content">
+
+      <div class="b2b-badge">For Facility Operators</div>
+
+      <div class="panel-title">Partner<br>With <em>Us</em></div>
+      <div class="panel-sub">Responsibly handle abandoned units — reduce liability, support your former tenants.</div>
+
+      <div class="gold-divider"></div>
+
+      <div class="benefit-list">
+        <div class="benefit-item">
+          <div class="benefit-icon">🛡️</div>
+          <div class="benefit-content">
+            <span class="benefit-title">Reduce Your Liability</span>
+            <div class="benefit-desc">We take full ownership after auction. Documented, professional handling — you're protected.</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🤝</div>
+          <div class="benefit-content">
+            <span class="benefit-title">Support Former Tenants</span>
+            <div class="benefit-desc">We give previous renters a real path to recover belongings — no cost, no conflict.</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">📋</div>
+          <div class="benefit-content">
+            <span class="benefit-title">Professional &amp; Documented</span>
+            <div class="benefit-desc">Full catalog of contents. Transparent process. You'll always know what happened to the unit.</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🏆</div>
+          <div class="benefit-content">
+            <span class="benefit-title">Reputation You Can Stand Behind</span>
+            <div class="benefit-desc">Partner with a company built on doing right by people — a differentiator for your facility.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-box">
+        <div class="contact-label">Get in touch</div>
+        <span class="contact-url">cutthelock<span>.com</span></span>
+        <div class="contact-email">hello@cutthelock.com</div>
+      </div>
+
+    </div>
+  </div><!-- /panel 5 -->
+
+  <!-- ══ PANEL 6: BACK CENTER — Mailing Panel ══ -->
+  <div class="panel" id="p6">
+    <div class="bg-glow"></div>
+
+    <!-- Indicia top-right -->
+    <div class="indicia">
+      <div class="indicia-text">Postage<br>Indicia<br>Here</div>
+    </div>
+
+    <!-- Return address top-left -->
+    <div class="return-address">
+      <div class="return-label">Return Address</div>
+      <div class="return-lines">
+        Cut The Lock<br>
+        Austin / Round Rock, TX
+      </div>
+    </div>
+
+    <div class="content" style="top: 1.1in; align-items: center; text-align: center;">
+
+      <!-- Brand block center -->
+      <div class="brand-block">
+        <!-- Inline padlock SVG (small, centered) -->
+        <svg width="44" height="52" viewBox="0 0 80 95" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 8px; display:block; margin-left:auto; margin-right:auto;">
+          <path d="M24 40 L24 22 Q24 8 40 8 Q52 8 55 18" stroke="#D4A017" stroke-width="5.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <line x1="53" y1="23" x2="61" y2="16" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          <line x1="56" y1="27" x2="66" y2="24" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+          <line x1="51" y1="20" x2="56" y2="12" stroke="#F0C040" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          <rect x="12" y="37" width="56" height="44" rx="5" fill="#1a1a1a" stroke="#D4A017" stroke-width="2.5"/>
+          <circle cx="40" cy="55" r="6" fill="#D4A017" opacity="0.9"/>
+          <rect x="37" y="57" width="6" height="10" rx="2" fill="#D4A017" opacity="0.9"/>
+          <path d="M40 76 Q36 72 33 69 Q29 65 33 61 Q37 57 40 63 Q43 57 47 61 Q51 65 47 69 Q44 72 40 76Z" fill="#8B3A1A" opacity="0.7"/>
+        </svg>
+
+        <span class="brand-name">Cut The Lock</span>
+        <div class="brand-tagline">Recover · Revive · Reunite</div>
+        <span class="brand-url">www.<span>CutTheLock.com</span></span>
+        <span class="brand-location">Austin / Round Rock, TX</span>
+      </div>
+
+      <div class="checks-block">
+        <div class="check-row">
+          <div class="check-mark">✓</div>
+          <div class="check-label">No cost to search the recovery database</div>
+        </div>
+        <div class="check-row">
+          <div class="check-mark">✓</div>
+          <div class="check-label">Simple claim process — done in minutes</div>
+        </div>
+        <div class="check-row">
+          <div class="check-mark">✓</div>
+          <div class="check-label">Respectful verification — real people, real care</div>
+        </div>
+        <div class="check-row">
+          <div class="check-mark">✓</div>
+          <div class="check-label">Sentimental items returned at no charge</div>
+        </div>
+      </div>
+
+      <!-- Mailing address area -->
+      <div class="mail-area">
+        <div class="mail-label-text">Mailing Label / Address Here</div>
+        <div class="mail-label-text" style="font-size: 5pt;">Bulk mail / addressed indicia as needed</div>
+      </div>
+
+    </div>
+  </div><!-- /panel 6 -->
+
+  <!-- ══ PANEL 1: FRONT COVER ══ -->
+  <div class="panel" id="p1">
+    <div class="bg-diagonal"></div>
+    <div class="bg-glow"></div>
+
+    <!-- Cut padlock SVG top-right -->
+    <div class="lock-pos">
+      <svg width="72" height="85" viewBox="0 0 80 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 40 L24 22 Q24 8 40 8 Q52 8 55 18" stroke="#D4A017" stroke-width="5.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+        <line x1="53" y1="23" x2="61" y2="16" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+        <line x1="56" y1="27" x2="66" y2="24" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+        <line x1="51" y1="20" x2="56" y2="12" stroke="#F0C040" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+        <rect x="12" y="37" width="56" height="44" rx="5" fill="#1a1a1a" stroke="#D4A017" stroke-width="2.5"/>
+        <circle cx="40" cy="55" r="6" fill="#D4A017" opacity="0.9"/>
+        <rect x="37" y="57" width="6" height="10" rx="2" fill="#D4A017" opacity="0.9"/>
+        <path d="M40 76 Q36 72 33 69 Q29 65 33 61 Q37 57 40 63 Q43 57 47 61 Q51 65 47 69 Q44 72 40 76Z" fill="#8B3A1A" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <div class="content">
+
+      <!-- Logo -->
+      <div class="logo-area">
+        <span class="logo-name">Cut The Lock</span>
+        <span class="logo-sub">Storage Recovery · Marketplace</span>
+      </div>
+
+      <!-- Main hook -->
+      <div class="hook-block">
+        <div class="hook-eyebrow">Lost Something in Storage?</div>
+
+        <div class="hook-headline">
+          It Might<br>Not Be<br><em>Gone.</em>
+        </div>
+
+        <div class="hook-divider"></div>
+
+        <div class="hook-sub">
+          We buy abandoned storage units — and we keep detailed records of every personal item inside.
+        </div>
+        <div class="hook-sub2">
+          Search free. Claim free. Reunited families is the mission.
+        </div>
+      </div>
+
+      <!-- Tagline -->
+      <div class="tagline-row">Recover &nbsp;·&nbsp; Revive &nbsp;·&nbsp; Reunite</div>
+
+      <!-- Bottom: URL + QR -->
+      <div class="bottom-qr-row">
+        <div class="bottom-url-block">
+          <span class="url-action">Start Here — It's Free</span>
+          <span class="url-main">www.<span>CutTheLock</span>.com</span>
+        </div>
+        <div class="qr-wrap">
+          <div class="qr-frame">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=https%3A%2F%2Fcutthelock.com%3Futm_source%3Dprint%26utm_medium%3Deddm%26utm_campaign%3Dlocal_awareness"
+              alt="QR: cutthelock.com"
+              width="80" height="80"
+              loading="eager"
+            />
+          </div>
+          <div class="qr-label">Scan to Visit</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /panel 1 / front cover -->
+
+</div><!-- /outside-spread -->
+
+<!-- ════════════════════════════════════════════════════════════
+     PRINT VENDOR SPECS (screen only)
+════════════════════════════════════════════════════════════ -->
+<div class="instructions">
+  <h3>📐 Print Vendor Specs</h3>
+  <ul>
+    <li>Sheet size (flat): <code>8.5" × 11"</code> — standard letter, landscape orientation</li>
+    <li>Finished size (folded): <code>3.667" × 8.5"</code></li>
+    <li>Fold type: <code>C-fold (Letter fold)</code> — 3 equal panels per side</li>
+    <li>Color mode: <code>CMYK conversion required</code> — this file is RGB</li>
+    <li>Color reference: Black <code>#000000</code> · Gold <code>#D4A017</code> · Rust <code>#8B3A1A</code></li>
+    <li>Stock recommendation: 100lb gloss cover or 14pt card with UV coating</li>
+    <li>QR codes: Front cover → <code>cutthelock.com</code> · Marketplace panel → <code>cutthelock.com/listings</code></li>
+    <li>Bleed: Add 0.125" bleed to all 4 edges if your printer requires it</li>
+  </ul>
+  <h3 style="margin-top:14px">📂 Page Layout</h3>
+  <ul>
+    <li><span class="ok">Page 1 (Inside):</span> How It Works | Services (Buy Back + POPP) | Marketplace</li>
+    <li><span class="ok">Page 2 (Outside):</span> For Facility Operators | Mailing Panel | Front Cover</li>
+  </ul>
+</div>
+
+</body>
+</html>

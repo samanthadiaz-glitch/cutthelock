@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cut The Lock — EDDM Postcard (Print-Ready)</title>
+<style>
+  /*
+   * CUT THE LOCK — EDDM POSTCARD
+   * USPS EDDM Compliant: 6.5" × 9" (Every Door Direct Mail)
+   *
+   * PRINT SPECS:
+   *   Trim size:    6.5" × 9.0"
+   *   Bleed area:   6.75" × 9.25" (add 0.125" bleed on all 4 sides)
+   *   Safe zone:    0.25" inside trim on all sides (critical content stays here)
+   *
+   * PRODUCTION NOTES:
+   *   - Print at 300 DPI minimum
+   *   - CMYK color mode (this file uses RGB; convert before final print)
+   *   - Matte or gloss UV coating recommended
+   *   - USPS EDDM requires: ≥6.125" on longest side, ≤12"×15", ≥0.007" thick
+   *   - Indicia placement: top-right of address side, per USPS DMM 703
+   */
+
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --black:       #000000;
+    --gold:        #D4A017;
+    --gold-light:  #F0C040;
+    --gold-dark:   #A07810;
+    --white:       #FFFFFF;
+    --gray-light:  #E8E8E8;
+    --gray-mid:    #888888;
+    --charcoal:    #1A1A1A;
+    --rust:        #8B3A1A;
+
+    /* Card dimensions */
+    --bleed:       0.125in;
+    --safe:        0.375in;   /* bleed + 0.25in safe zone */
+    --card-w:      6.5in;
+    --card-h:      9.0in;
+    --full-w:      6.75in;    /* with bleed */
+    --full-h:      9.25in;    /* with bleed */
+  }
+
+  html, body {
+    background: #444;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    padding: 48px 24px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    color: var(--white);
+  }
+
+  /* ─── SCREEN LABELS ─── */
+  .screen-label {
+    color: #ccc;
+    font-family: monospace;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: -36px;
+    background: #222;
+    padding: 6px 16px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── CARD WRAPPER (bleed included) ─── */
+  .card {
+    position: relative;
+    width: var(--full-w);
+    height: var(--full-h);
+    overflow: hidden;
+    /* Bleed border guides (light pink dashes) */
+    outline: 1px dashed rgba(255,100,100,0.5);
+  }
+
+  /* Crop mark guides overlaid on card */
+  .card::before,
+  .card::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Safe-zone overlay box (visible on screen, hidden on print) */
+  .safe-zone-box {
+    position: absolute;
+    top: var(--safe);
+    left: var(--safe);
+    right: var(--safe);
+    bottom: var(--safe);
+    border: 1px dashed rgba(0,200,255,0.35);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ─── CORNER CROP MARKS ─── */
+  .crop-mark {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+  }
+  /* Each corner: 2 lines (horizontal + vertical) */
+  .crop-mark::before,
+  .crop-mark::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.6);
+  }
+  /* TL */
+  .crop-tl { top: 0; left: 0; }
+  .crop-tl::before { width: 0.08in; height: 1px; top: 0.125in; left: 0; }
+  .crop-tl::after  { width: 1px; height: 0.08in; left: 0.125in; top: 0; }
+  /* TR */
+  .crop-tr { top: 0; right: 0; }
+  .crop-tr::before { width: 0.08in; height: 1px; top: 0.125in; right: 0; }
+  .crop-tr::after  { width: 1px; height: 0.08in; right: 0.125in; top: 0; }
+  /* BL */
+  .crop-bl { bottom: 0; left: 0; }
+  .crop-bl::before { width: 0.08in; height: 1px; bottom: 0.125in; left: 0; }
+  .crop-bl::after  { width: 1px; height: 0.08in; left: 0.125in; bottom: 0; }
+  /* BR */
+  .crop-br { bottom: 0; right: 0; }
+  .crop-br::before { width: 0.08in; height: 1px; bottom: 0.125in; right: 0; }
+  .crop-br::after  { width: 1px; height: 0.08in; right: 0.125in; bottom: 0; }
+
+  /* ─── CARD INTERIOR (trim-to-trim, offset by bleed) ─── */
+  .card-inner {
+    position: absolute;
+    top: var(--bleed);
+    left: var(--bleed);
+    width: var(--card-w);
+    height: var(--card-h);
+    overflow: hidden;
+  }
+
+
+  /* ════════════════════════════════════════════
+     SIDE 1 — RECOVERY
+  ════════════════════════════════════════════ */
+  .side1-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dramatic angled accent band */
+  .s1-diagonal {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3.4in;
+    background: linear-gradient(160deg, #1a0a00 0%, #3d1800 40%, #000 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+    z-index: 1;
+  }
+
+  /* Rust/gold edge glow */
+  .s1-glow {
+    position: absolute;
+    top: -0.5in;
+    left: -0.5in;
+    width: 4.5in;
+    height: 4.5in;
+    background: radial-gradient(circle at 30% 30%, rgba(212,160,23,0.18) 0%, transparent 65%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ── LOCK ICON (SVG) ── */
+  .s1-lock {
+    position: absolute;
+    top: 0.22in;
+    right: 0.3in;
+    width: 1.15in;
+    height: 1.4in;
+    z-index: 10;
+    opacity: 0.92;
+  }
+
+  /* ── TOP HEADER BAND ── */
+  .s1-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.22in 0.38in 0.14in;
+    z-index: 10;
+  }
+
+  .s1-logo-text {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .s1-logo-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    color: rgba(212,160,23,0.6);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 0.03in;
+  }
+
+  /* ── MAIN HEADLINE ── */
+  .s1-headline-block {
+    position: absolute;
+    top: 0.75in;
+    left: 0.38in;
+    right: 1.55in;
+    z-index: 10;
+  }
+
+  .s1-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.1in;
+  }
+
+  .s1-headline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 25pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .s1-headline em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  /* ── GOLD DIVIDER ── */
+  .s1-divider {
+    position: absolute;
+    top: 2.35in;
+    left: 0.38in;
+    width: 0.6in;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    z-index: 10;
+  }
+
+  /* ── BODY COPY ── */
+  .s1-body {
+    position: absolute;
+    top: 2.55in;
+    left: 0.38in;
+    right: 0.38in;
+    z-index: 10;
+  }
+
+  .s1-body-lead {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: var(--gray-light);
+    line-height: 1.5;
+    margin-bottom: 0.14in;
+  }
+
+  .s1-body-copy {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8.5pt;
+    color: rgba(230,230,230,0.85);
+    line-height: 1.55;
+  }
+
+  /* ── ITEMS ROW ── */
+  .s1-items {
+    position: absolute;
+    top: 4.1in;
+    left: 0.38in;
+    right: 0.38in;
+    display: flex;
+    gap: 0.15in;
+    z-index: 10;
+  }
+
+  .s1-item {
+    flex: 1;
+    background: rgba(212,160,23,0.08);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 3px;
+    padding: 0.1in 0.08in;
+    text-align: center;
+  }
+
+  .s1-item-icon {
+    font-size: 14pt;
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.04in;
+  }
+
+  .s1-item-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6.5pt;
+    color: rgba(255,255,255,0.75);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── BOTTOM CTA BAND ── */
+  .s1-cta-band {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2.75in;
+    background: linear-gradient(180deg, transparent 0%, rgba(212,160,23,0.06) 30%, #0d0800 100%);
+    z-index: 5;
+  }
+
+  .s1-cta-row {
+    position: absolute;
+    bottom: 0.38in;
+    left: 0.38in;
+    right: 0.38in;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .s1-cta-text {
+    flex: 1;
+    padding-right: 0.2in;
+  }
+
+  .s1-cta-action {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.06in;
+  }
+
+  .s1-cta-url {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .s1-cta-url span {
+    color: var(--gold);
+  }
+
+  .s1-cta-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.04in;
+    letter-spacing: 0.05em;
+  }
+
+  .s1-qr-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.06in;
+  }
+
+  .s1-qr-frame {
+    width: 1.1in;
+    height: 1.1in;
+    background: var(--white);
+    border-radius: 4px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .s1-qr-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .s1-qr-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Tagline bar */
+  .s1-tagline {
+    position: absolute;
+    bottom: 2.75in;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .s1-tagline-text {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    color: rgba(212,160,23,0.65);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
+
+  /* ════════════════════════════════════════════
+     SIDE 2 — MARKETPLACE
+  ════════════════════════════════════════════ */
+  .side2-inner {
+    width: 100%;
+    height: 100%;
+    background: #0e0a04;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Warm texture bands */
+  .s2-bg-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3.2in;
+    background: linear-gradient(155deg, #1c1005 0%, #2a1808 50%, #0e0a04 100%);
+    z-index: 1;
+  }
+
+  .s2-bg-glow {
+    position: absolute;
+    top: -0.3in;
+    right: -0.4in;
+    width: 5in;
+    height: 4in;
+    background: radial-gradient(ellipse at 70% 20%, rgba(180,100,20,0.2) 0%, transparent 65%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ── TOP HEADER ── */
+  .s2-header {
+    position: absolute;
+    top: 0.22in;
+    left: 0.38in;
+    right: 0.38in;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+  }
+
+  .s2-logo-text {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .s2-badge {
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  /* ── TREASURE ICON GRID ── */
+  .s2-icon-row {
+    position: absolute;
+    top: 0.7in;
+    left: 0.38in;
+    right: 0.38in;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.08in;
+    z-index: 10;
+  }
+
+  .s2-icon-tile {
+    background: rgba(212,160,23,0.07);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 4px;
+    padding: 0.1in 0.04in;
+    text-align: center;
+  }
+
+  .s2-icon-emoji {
+    font-size: 15pt;
+    line-height: 1;
+    display: block;
+  }
+
+  .s2-icon-name {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── MAIN HEADLINE ── */
+  .s2-headline-block {
+    position: absolute;
+    top: 1.75in;
+    left: 0.38in;
+    right: 0.38in;
+    z-index: 10;
+  }
+
+  .s2-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.1in;
+  }
+
+  .s2-headline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 26pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.08;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .s2-headline em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  /* ── GOLD DIVIDER ── */
+  .s2-divider {
+    position: absolute;
+    top: 3.1in;
+    left: 0.38in;
+    width: 0.6in;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    z-index: 10;
+  }
+
+  /* ── BULLET FEATURES ── */
+  .s2-features {
+    position: absolute;
+    top: 3.3in;
+    left: 0.38in;
+    right: 0.38in;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1in;
+  }
+
+  .s2-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.1in;
+  }
+
+  .s2-feature-bullet {
+    width: 0.15in;
+    height: 0.15in;
+    background: var(--gold);
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .s2-feature-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    color: rgba(230,230,230,0.88);
+    line-height: 1.4;
+  }
+
+  .s2-feature-text strong {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* ── PROOF STRIP ── */
+  .s2-proof-strip {
+    position: absolute;
+    top: 5.1in;
+    left: 0;
+    right: 0;
+    background: rgba(212,160,23,0.08);
+    border-top: 1px solid rgba(212,160,23,0.2);
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+    padding: 0.12in 0.38in;
+    display: flex;
+    justify-content: space-around;
+    z-index: 10;
+  }
+
+  .s2-proof-stat {
+    text-align: center;
+  }
+
+  .s2-proof-num {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+
+  .s2-proof-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6.5pt;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ── BOTTOM CTA BAND ── */
+  .s2-cta-row {
+    position: absolute;
+    bottom: 0.38in;
+    left: 0.38in;
+    right: 0.38in;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .s2-cta-text { flex: 1; padding-right: 0.2in; }
+
+  .s2-cta-action {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.06in;
+  }
+
+  .s2-cta-url {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .s2-cta-url span { color: var(--gold); }
+
+  .s2-cta-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.04in;
+  }
+
+  .s2-qr-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.06in;
+  }
+
+  .s2-qr-frame {
+    width: 1.1in;
+    height: 1.1in;
+    background: var(--white);
+    border-radius: 4px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .s2-qr-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .s2-qr-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Tagline bar */
+  .s2-tagline {
+    position: absolute;
+    top: 5.62in;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .s2-tagline-text {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    color: rgba(212,160,23,0.65);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
+  /* ── INDICIA PLACEHOLDER (Side 2 only) ── */
+  .indicia-placeholder {
+    position: absolute;
+    top: 0.38in;
+    right: 0.38in;
+    width: 1.4in;
+    height: 0.9in;
+    border: 1px dashed rgba(212,160,23,0.35);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 6px;
+  }
+
+  .indicia-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 5.5pt;
+    color: rgba(212,160,23,0.45);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+  }
+
+  /* ── RETURN ADDRESS / ADDRESS AREA (Side 2 bottom) ── */
+  .address-area {
+    position: absolute;
+    bottom: 0.38in;
+    right: 0.38in;
+    width: 2.8in;
+    z-index: 10;
+  }
+
+  .address-lines {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .return-address-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 6pt;
+    color: rgba(212,160,23,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.04in;
+    text-align: right;
+  }
+
+
+  /* ═══════════════════════════════════════════════════════
+     PRINT STYLES — When printing to PDF
+     "File → Print → Save as PDF" in Chrome at 100% scale
+     Page size: Custom 6.75" × 9.25" (with bleed)
+     Margins: None
+  ═══════════════════════════════════════════════════════ */
+  @media print {
+    @page {
+      size: 6.75in 9.25in;
+      margin: 0;
+    }
+
+    html, body {
+      background: transparent !important;
+      display: block;
+      padding: 0;
+      gap: 0;
+    }
+
+    .screen-label,
+    .instructions,
+    .safe-zone-box,
+    .crop-mark {
+      display: none !important;
+    }
+
+    .card {
+      outline: none;
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+
+    /* Force background colors/images to print */
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* ─── INSTRUCTION PANEL ─── */
+  .instructions {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px 28px;
+    max-width: 6.75in;
+    width: 100%;
+    font-family: monospace;
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.7;
+  }
+
+  .instructions h3 {
+    color: #D4A017;
+    font-size: 13px;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .instructions li { margin-left: 16px; margin-bottom: 4px; }
+  .instructions code { color: #F0C040; background: rgba(212,160,23,0.1); padding: 1px 5px; border-radius: 3px; }
+  .instructions .note { color: rgba(255,100,100,0.8); }
+  .instructions .ok { color: rgba(100,220,100,0.8); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN INSTRUCTIONS
+═══════════════════════════════════════════ -->
+<div class="instructions">
+  <h3>🖨️ How to Print / Export PDF</h3>
+  <ul>
+    <li>Open in <strong>Google Chrome</strong> (best PDF rendering)</li>
+    <li>Press <code>Ctrl+P</code> / <code>Cmd+P</code> → <em>Destination:</em> <code>Save as PDF</code></li>
+    <li>Click <strong>More settings</strong> → set <em>Paper size</em> to <code>Custom: 6.75" × 9.25"</code></li>
+    <li>Set <em>Margins</em> to <code>None</code></li>
+    <li>Check <code>Background graphics</code> ✓</li>
+    <li>Scale: <code>100%</code></li>
+    <li>Click <strong>Save</strong> — you'll get 2 pages (Side 1 + Side 2)</li>
+  </ul>
+  <p style="margin-top:12px"><span class="note">⚠ CMYK CONVERSION:</span> This file uses RGB colors. Your print vendor must convert to CMYK before press. Provide this PDF + the color hex values from the guide above.</p>
+  <p style="margin-top:8px"><span class="ok">✓ USPS EDDM compliant:</span> 6.5"×9" trim size (≥ 6.125" long side). Minimum 0.007" thickness required at print.</p>
+  <p style="margin-top:8px" style="color:#888">Blue dashed line = safe zone (keep critical content inside). Red dashed border = bleed edge.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SIDE 1 — RECOVERY
+═══════════════════════════════════════════ -->
+<div class="screen-label">SIDE 1 — RECOVERY &nbsp;|&nbsp; trim: 6.5" × 9.0" &nbsp;|&nbsp; with bleed: 6.75" × 9.25"</div>
+
+<div class="card" id="side1">
+  <!-- Bleed crop marks -->
+  <div class="crop-mark crop-tl"></div>
+  <div class="crop-mark crop-tr"></div>
+  <div class="crop-mark crop-bl"></div>
+  <div class="crop-mark crop-br"></div>
+  <!-- Safe zone guide (screen only) -->
+  <div class="safe-zone-box"></div>
+
+  <div class="card-inner">
+    <div class="side1-inner">
+
+      <!-- Background elements -->
+      <div class="s1-diagonal"></div>
+      <div class="s1-glow"></div>
+
+      <!-- Cut padlock SVG icon -->
+      <svg class="s1-lock" viewBox="0 0 80 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shackle (broken/cut) -->
+        <path d="M24 40 L24 22 Q24 8 40 8 Q52 8 55 18" stroke="#D4A017" stroke-width="5.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+        <!-- Cut sparks on shackle break -->
+        <line x1="53" y1="23" x2="61" y2="16" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+        <line x1="56" y1="27" x2="66" y2="24" stroke="#F0C040" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+        <line x1="51" y1="20" x2="56" y2="12" stroke="#F0C040" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+        <!-- Lock body -->
+        <rect x="12" y="37" width="56" height="44" rx="5" fill="#1a1a1a" stroke="#D4A017" stroke-width="2.5"/>
+        <!-- Keyhole -->
+        <circle cx="40" cy="55" r="6" fill="#D4A017" opacity="0.9"/>
+        <rect x="37" y="57" width="6" height="10" rx="2" fill="#D4A017" opacity="0.9"/>
+        <!-- Rust heart (brand element) -->
+        <path d="M40 76 Q36 72 33 69 Q29 65 33 61 Q37 57 40 63 Q43 57 47 61 Q51 65 47 69 Q44 72 40 76Z" fill="#8B3A1A" opacity="0.7"/>
+      </svg>
+
+      <!-- Logo / Brand -->
+      <div class="s1-header">
+        <div class="s1-logo-text">Cut The Lock</div>
+        <div class="s1-logo-subtitle">storage recovery · marketplace</div>
+      </div>
+
+      <!-- Main headline -->
+      <div class="s1-headline-block">
+        <div class="s1-eyebrow">Important Notice</div>
+        <div class="s1-headline">
+          Did you lose<br>a storage unit?<br>
+          <em>We may have<br>your belongings.</em>
+        </div>
+      </div>
+
+      <div class="s1-divider"></div>
+
+      <!-- Body copy -->
+      <div class="s1-body">
+        <div class="s1-body-lead">
+          Auction buyers have found family photos, heirlooms, and keepsakes that belong to someone else.
+        </div>
+        <div class="s1-body-copy">
+          When a storage unit goes to auction, the contents don't disappear — they get purchased by real people trying to do the right thing. Thousands of items are sitting in our recovery database right now, waiting to go home. Search for free. Submit a claim in minutes.
+        </div>
+      </div>
+
+      <!-- Item type chips -->
+      <div class="s1-items">
+        <div class="s1-item">
+          <span class="s1-item-icon">📷</span>
+          <div class="s1-item-label">Photos &amp; Videos</div>
+        </div>
+        <div class="s1-item">
+          <span class="s1-item-icon">💍</span>
+          <div class="s1-item-label">Jewelry &amp; Rings</div>
+        </div>
+        <div class="s1-item">
+          <span class="s1-item-icon">📜</span>
+          <div class="s1-item-label">Documents</div>
+        </div>
+        <div class="s1-item">
+          <span class="s1-item-icon">🎖️</span>
+          <div class="s1-item-label">Military Items</div>
+        </div>
+        <div class="s1-item">
+          <span class="s1-item-icon">🎁</span>
+          <div class="s1-item-label">Keepsakes</div>
+        </div>
+      </div>
+
+      <!-- Tagline -->
+      <div class="s1-tagline">
+        <div class="s1-tagline-text">Recover &nbsp;·&nbsp; Revive &nbsp;·&nbsp; Reunite</div>
+      </div>
+
+      <!-- Bottom CTA band -->
+      <div class="s1-cta-band"></div>
+
+      <div class="s1-cta-row">
+        <div class="s1-cta-text">
+          <div class="s1-cta-action">Search the Recovery Database</div>
+          <div class="s1-cta-url">cutthelock<span>.com/recover?utm_source=print&amp;utm_medium=eddm&amp?utm_campaign=local_awareness</span></div>
+          <div class="s1-cta-sub">Free to search &nbsp;·&nbsp; Free to claim &nbsp;·&nbsp; Real people, real care</div>
+        </div>
+        <div class="s1-qr-wrap">
+          <div class="s1-qr-frame">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=https%3A%2F%2Fcutthelock.com%2Frecover%3Futm_source%3Dprint%26utm_medium%3Deddm%26utm_campaign%3Dlocal_awareness"
+              alt="QR: cutthelock.com/recover"
+              loading="eager"
+            />
+          </div>
+          <div class="s1-qr-label">Scan to Search</div>
+        </div>
+      </div>
+
+    </div><!-- /side1-inner -->
+  </div><!-- /card-inner -->
+</div><!-- /card side1 -->
+
+
+<!-- ═══════════════════════════════════════════
+     SIDE 2 — MARKETPLACE
+═══════════════════════════════════════════ -->
+<div class="screen-label">SIDE 2 — MARKETPLACE / ADDRESS SIDE &nbsp;|&nbsp; trim: 6.5" × 9.0"</div>
+
+<div class="card" id="side2">
+  <!-- Bleed crop marks -->
+  <div class="crop-mark crop-tl"></div>
+  <div class="crop-mark crop-tr"></div>
+  <div class="crop-mark crop-bl"></div>
+  <div class="crop-mark crop-br"></div>
+  <!-- Safe zone guide (screen only) -->
+  <div class="safe-zone-box"></div>
+
+  <div class="card-inner">
+    <div class="side2-inner">
+
+      <!-- Background elements -->
+      <div class="s2-bg-top"></div>
+      <div class="s2-bg-glow"></div>
+
+      <!-- Header row -->
+      <div class="s2-header">
+        <div>
+          <div class="s2-logo-text">Cut The Lock</div>
+        </div>
+        <!-- USPS Indicia placeholder — top-right per USPS DMM 703 -->
+        <div class="indicia-placeholder">
+          <div class="indicia-text">
+            USPS EDDM<br>Retail Indicia<br>Here<br>
+            <span style="font-size:4.5pt; color: rgba(212,160,23,0.3)">(Required by USPS)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category icon grid -->
+      <div class="s2-icon-row">
+        <div class="s2-icon-tile">
+          <span class="s2-icon-emoji">🪑</span>
+          <div class="s2-icon-name">Furniture</div>
+        </div>
+        <div class="s2-icon-tile">
+          <span class="s2-icon-emoji">📻</span>
+          <div class="s2-icon-name">Electronics</div>
+        </div>
+        <div class="s2-icon-tile">
+          <span class="s2-icon-emoji">🎨</span>
+          <div class="s2-icon-name">Art &amp; Décor</div>
+        </div>
+        <div class="s2-icon-tile">
+          <span class="s2-icon-emoji">👗</span>
+          <div class="s2-icon-name">Clothing</div>
+        </div>
+        <div class="s2-icon-tile">
+          <span class="s2-icon-emoji">🔧</span>
+          <div class="s2-icon-name">Tools</div>
+        </div>
+      </div>
+
+      <!-- Main headline -->
+      <div class="s2-headline-block">
+        <div class="s2-eyebrow">Real Storage Auctions. Real Finds.</div>
+        <div class="s2-headline">
+          Unique treasures<br>from real units —<br>
+          <em>shop online,<br>ship to your door.</em>
+        </div>
+      </div>
+
+      <div class="s2-divider"></div>
+
+      <!-- Feature bullets -->
+      <div class="s2-features">
+        <div class="s2-feature-item">
+          <div class="s2-feature-bullet"></div>
+          <div class="s2-feature-text"><strong>Curated by real auction buyers</strong> — every item verified and listed with honest condition notes</div>
+        </div>
+        <div class="s2-feature-item">
+          <div class="s2-feature-bullet"></div>
+          <div class="s2-feature-text"><strong>Vintage, antique &amp; everyday finds</strong> — furniture, art, tools, collectibles, clothing, and more</div>
+        </div>
+        <div class="s2-feature-item">
+          <div class="s2-feature-bullet"></div>
+          <div class="s2-feature-text"><strong>Affordable prices</strong> — storage unit finds at a fraction of retail, shipped fast</div>
+        </div>
+        <div class="s2-feature-item">
+          <div class="s2-feature-bullet"></div>
+          <div class="s2-feature-text"><strong>You shop with purpose</strong> — every sale helps fund the recovery program that reunites families with lost belongings</div>
+        </div>
+      </div>
+
+      <!-- Proof stats strip -->
+      <div class="s2-proof-strip">
+        <div class="s2-proof-stat">
+          <span class="s2-proof-num">1,000+</span>
+          <span class="s2-proof-label">Items Listed</span>
+        </div>
+        <div class="s2-proof-stat">
+          <span class="s2-proof-num">Real</span>
+          <span class="s2-proof-label">Auction Buyers</span>
+        </div>
+        <div class="s2-proof-stat">
+          <span class="s2-proof-num">Free</span>
+          <span class="s2-proof-label">Shipping Available</span>
+        </div>
+      </div>
+
+      <!-- Tagline -->
+      <div class="s2-tagline">
+        <div class="s2-tagline-text">Buy units. Return memories. Resell the rest.</div>
+      </div>
+
+      <!-- Bottom CTA row -->
+      <div class="s2-cta-row">
+        <div class="s2-cta-text">
+          <div class="s2-cta-action">Browse &amp; Shop Online</div>
+          <div class="s2-cta-url">cutthelock<span>.com/listings?utm_source=print&amp?utm_medium=eddm&amp?utm_campaign=local_awareness</span></div>
+          <div class="s2-cta-sub">New items added daily &nbsp;·&nbsp; Secure checkout &nbsp;·&nbsp; Ships nationwide</div>
+        </div>
+        <div class="s2-qr-wrap">
+          <div class="s2-qr-frame">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=https%3A%2F%2Fcutthelock.com%2Flistings%3Futm_source%3Dprint%26utm_medium%3Deddm%26utm_campaign%3Dlocal_awareness"
+              alt="QR: cutthelock.com/listings"
+              loading="eager"
+            />
+          </div>
+          <div class="s2-qr-label">Scan to Shop</div>
+        </div>
+      </div>
+
+    </div><!-- /side2-inner -->
+  </div><!-- /card-inner -->
+</div><!-- /card side2 -->
+
+
+<!-- ═══════════════════════════════════════════
+     PRINT GUIDE / NOTES
+═══════════════════════════════════════════ -->
+<div class="instructions">
+  <h3>📐 Print Vendor Specs</h3>
+  <ul>
+    <li>Trim size: <code>6.5" × 9.0"</code> &nbsp;(USPS EDDM minimum: 6.125" on long side ✓)</li>
+    <li>Bleed: <code>0.125" (1/8")</code> on all 4 sides — full-bleed backgrounds extend to bleed edge</li>
+    <li>Safe zone: <code>0.25"</code> inside trim (blue dashed guide shown above)</li>
+    <li>Resolution: <code>300 DPI minimum</code> (this file renders at screen res — vendor should request 300dpi-ready PDF)</li>
+    <li>Color mode: <code>CMYK conversion required</code> — provide RGB hex values to vendor: Black <code>#000000</code>, Gold <code>#D4A017</code></li>
+    <li>Stock: Recommended 100lb gloss cover or 14pt card with UV coating</li>
+    <li>Thickness: <code>≥ 0.007"</code> required by USPS for EDDM</li>
+    <li>USPS Indicia: Top-right corner of address side (Side 2), inside safe zone — placeholder box shown</li>
+    <li>QR codes link to: <code>cutthelock.com/recover</code> (Side 1) and <code>cutthelock.com/listings</code> (Side 2)</li>
+  </ul>
+  <h3 style="margin-top:16px">🎨 Brand Color Reference</h3>
+  <ul>
+    <li>Primary Black: <code>#000000</code></li>
+    <li>Gold Accent: <code>#D4A017</code></li>
+    <li>Gold Light: <code>#F0C040</code></li>
+    <li>Rust Accent: <code>#8B3A1A</code></li>
+    <li>White: <code>#FFFFFF</code></li>
+    <li>Body Text (on dark): <code>rgba(230,230,230,0.88)</code></li>
+  </ul>
+</div>
+
+</body>
+</html>

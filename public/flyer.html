@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cut The Lock — 8.5×11 Flyer (Print-Ready)</title>
+<style>
+  /*
+   * CUT THE LOCK — 8.5" × 11" TWO-SIDED FLYER
+   *
+   * PRINT INSTRUCTIONS:
+   *   1. Open in Chrome/Chromium
+   *   2. File → Print (Ctrl+P / Cmd+P)
+   *   3. Set: Paper = Letter (8.5×11"), Margins = None, Scale = 100%
+   *   4. CHECK: "Background graphics" / "Print backgrounds"
+   *   5. Save as PDF
+   *   Two pages will export: Page 1 = Front, Page 2 = Back
+   */
+
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --red:        #CC1F1F;
+    --red-dark:   #9B0000;
+    --red-light:  #E53333;
+    --black:      #0D0D0D;
+    --charcoal:   #1A1A1A;
+    --dark:       #111111;
+    --white:      #FFFFFF;
+    --cream:      #F2EDE6;
+    --gray:       #AAAAAA;
+    --gray-dim:   #666666;
+
+    --page-w: 8.5in;
+    --page-h: 11in;
+  }
+
+  /* ─── SCREEN PREVIEW WRAPPER ─── */
+  html, body {
+    background: #2a2a2a;
+    font-family: 'Open Sans', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    color: var(--white);
+  }
+
+  /* ─── EACH PAGE (8.5×11) ─── */
+  .page {
+    width: var(--page-w);
+    height: var(--page-h);
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Last page no forced break */
+  .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* ─── SCREEN PREVIEW LABEL ─── */
+  .screen-label {
+    background: #111;
+    color: #888;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    padding: 8px 20px;
+    width: var(--page-w);
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     GRITTY INDUSTRIAL TEXTURE (pure CSS)
+  ═══════════════════════════════════════════════════ */
+  .texture-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    /* Grain effect */
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.012) 2px,
+        rgba(255,255,255,0.012) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(255,255,255,0.008) 3px,
+        rgba(255,255,255,0.008) 6px
+      );
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PAGE 1 — FRONT SIDE
+  ═══════════════════════════════════════════════════ */
+
+  /* — Background — */
+  .p1-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      /* Dark vignette edges */
+      radial-gradient(ellipse at 50% 100%, #000 0%, transparent 65%),
+      radial-gradient(ellipse at 50% 0%, #050505 0%, transparent 50%),
+      /* Deep charcoal base */
+      #0D0D0D;
+    z-index: 1;
+  }
+
+  /* Subtle scratch/grain texture stripes */
+  .p1-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    mix-blend-mode: screen;
+  }
+
+  /* Warm red glow top-left */
+  .p1-glow {
+    position: absolute;
+    top: -1in;
+    left: -1in;
+    width: 6in;
+    height: 5in;
+    background: radial-gradient(ellipse at 30% 20%, rgba(180,20,20,0.18) 0%, transparent 60%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* — Top bar — */
+  .p1-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.52in;
+    background: var(--red-dark);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    padding: 0 0.45in;
+    justify-content: space-between;
+  }
+
+  .p1-topbar-logo {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .p1-topbar-url {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.04em;
+  }
+
+  /* — Main headline area — */
+  .p1-headline-zone {
+    position: absolute;
+    top: 0.72in;
+    left: 0.5in;
+    right: 0.5in;
+    z-index: 10;
+    text-align: center;
+  }
+
+  .p1-eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--red-light);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.1in;
+  }
+
+  .p1-headline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 52pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.0;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.8), 0 0 60px rgba(180,20,20,0.3);
+  }
+
+  .p1-subhead {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13.5pt;
+    font-style: italic;
+    color: var(--cream);
+    margin-top: 0.15in;
+    letter-spacing: 0.01em;
+    opacity: 0.85;
+  }
+
+  /* — Center padlock SVG image — */
+  .p1-lock-zone {
+    position: absolute;
+    top: 2.85in;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2.6in;
+    height: 2.6in;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* SVG padlock with heart */
+  .padlock-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 8px 32px rgba(200,20,20,0.35)) drop-shadow(0 2px 8px rgba(0,0,0,0.9));
+  }
+
+  /* — Body copy — */
+  .p1-body-zone {
+    position: absolute;
+    top: 5.62in;
+    left: 0.5in;
+    right: 0.5in;
+    z-index: 10;
+  }
+
+  .p1-body-intro {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9.5pt;
+    color: rgba(242,237,230,0.88);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 0.18in;
+  }
+
+  /* — "What is Cut The Lock?" section — */
+  .p1-section {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-left: 3px solid var(--red);
+    border-radius: 3px;
+    padding: 0.16in 0.22in;
+    margin-bottom: 0.16in;
+  }
+
+  .p1-section-heading {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--red-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.07in;
+  }
+
+  .p1-section-body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    color: rgba(242,237,230,0.85);
+    line-height: 1.55;
+  }
+
+  /* — Red CTA Banner — */
+  .p1-cta-banner {
+    position: absolute;
+    bottom: 0.7in;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 100%);
+    padding: 0.2in 0.45in;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.2in;
+  }
+
+  .p1-cta-left {
+    flex: 1;
+  }
+
+  .p1-cta-question {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 12.5pt;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    margin-bottom: 0.06in;
+  }
+
+  .p1-cta-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8.5pt;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.4;
+  }
+
+  .p1-cta-arrow {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 28pt;
+    font-weight: 700;
+    color: var(--white);
+    opacity: 0.9;
+    flex-shrink: 0;
+  }
+
+  /* — Footer — */
+  .p1-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0.68in;
+    background: #000;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5in;
+    border-top: 1px solid rgba(204,31,31,0.4);
+  }
+
+  .p1-footer-url {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .p1-footer-url span {
+    color: var(--red-light);
+  }
+
+  .p1-footer-tagline {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7pt;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* Red accent bar at midpoint */
+  .p1-accent-bar {
+    position: absolute;
+    top: 2.7in;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--red) 20%, var(--red) 80%, transparent 100%);
+    z-index: 15;
+    opacity: 0.5;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PAGE 2 — BACK SIDE
+  ═══════════════════════════════════════════════════ */
+
+  /* — Background — */
+  .p2-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 0%, rgba(160,10,10,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 100%, rgba(100,10,10,0.1) 0%, transparent 45%),
+      #0D0D0D;
+    z-index: 1;
+  }
+
+  /* — Top bar — */
+  .p2-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.52in;
+    background: var(--red-dark);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    padding: 0 0.45in;
+    justify-content: space-between;
+  }
+
+  .p2-topbar-logo {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .p2-topbar-tagline {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  /* — HOW IT WORKS header — */
+  .p2-howitworks {
+    position: absolute;
+    top: 0.75in;
+    left: 0.5in;
+    right: 0.5in;
+    z-index: 10;
+    text-align: center;
+    padding-bottom: 0.15in;
+    border-bottom: 1px solid rgba(204,31,31,0.3);
+  }
+
+  .p2-section-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--red-light);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.07in;
+  }
+
+  .p2-main-heading {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 34pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .p2-main-heading span {
+    color: var(--red-light);
+  }
+
+  /* — Steps grid — */
+  .p2-steps {
+    position: absolute;
+    top: 1.72in;
+    left: 0.45in;
+    right: 0.45in;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.18in;
+  }
+
+  .p2-step {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 0.2in 0.2in 0.18in;
+    position: relative;
+  }
+
+  .p2-step-num {
+    position: absolute;
+    top: -0.18in;
+    left: 0.15in;
+    width: 0.36in;
+    height: 0.36in;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .p2-step-icon {
+    font-size: 20pt;
+    margin-bottom: 0.08in;
+    display: block;
+    margin-top: 0.1in;
+  }
+
+  .p2-step-title {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 10pt;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.05in;
+  }
+
+  .p2-step-desc {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    color: rgba(242,237,230,0.75);
+    line-height: 1.5;
+  }
+
+  /* — Quote block — */
+  .p2-quote-zone {
+    position: absolute;
+    top: 4.42in;
+    left: 0.5in;
+    right: 0.5in;
+    z-index: 10;
+    text-align: center;
+    padding: 0.2in 0.3in;
+    border-top: 1px solid rgba(204,31,31,0.25);
+    border-bottom: 1px solid rgba(204,31,31,0.25);
+  }
+
+  .p2-quote-mark {
+    font-family: Georgia, serif;
+    font-size: 40pt;
+    color: var(--red);
+    line-height: 0.5;
+    display: block;
+    margin-bottom: 0.05in;
+    opacity: 0.7;
+  }
+
+  .p2-quote-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10.5pt;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.55;
+  }
+
+  .p2-quote-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8.5pt;
+    font-style: italic;
+    color: rgba(242,237,230,0.65);
+    margin-top: 0.08in;
+    line-height: 1.5;
+  }
+
+  /* — Partner section — */
+  .p2-partner-zone {
+    position: absolute;
+    top: 6.1in;
+    left: 0.45in;
+    right: 0.45in;
+    z-index: 10;
+    background: rgba(204,31,31,0.07);
+    border: 1px solid rgba(204,31,31,0.2);
+    border-left: 3px solid var(--red);
+    border-radius: 3px;
+    padding: 0.18in 0.22in;
+  }
+
+  .p2-partner-heading {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--red-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.07in;
+  }
+
+  .p2-partner-body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8.5pt;
+    color: rgba(242,237,230,0.82);
+    line-height: 1.55;
+  }
+
+  /* — QR Code zone — */
+  .p2-qr-zone {
+    position: absolute;
+    top: 7.35in;
+    left: 0.5in;
+    right: 0.5in;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4in;
+  }
+
+  .p2-qr-frame {
+    width: 1.3in;
+    height: 1.3in;
+    background: var(--white);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  }
+
+  .p2-qr-frame svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .p2-qr-text {
+    text-align: left;
+  }
+
+  .p2-qr-tagline {
+    font-family: 'Oswald', Impact, sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    margin-bottom: 0.1in;
+  }
+
+  .p2-qr-tagline span {
+    color: var(--red-light);
+  }
+
+  .p2-qr-url {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.05em;
+  }
+
+  /* — Bottom checkmark bar — */
+  .p2-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0.72in;
+    background: var(--red-dark);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4in;
+    padding: 0 0.45in;
+  }
+
+  .p2-check-item {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0.08in;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .p2-check-icon {
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 0.22in;
+    height: 0.22in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9pt;
+    flex-shrink: 0;
+  }
+
+  /* ─── PRINT RULES ─── */
+  @media print {
+    html, body {
+      background: transparent !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+
+    .screen-label {
+      display: none !important;
+    }
+
+    .page {
+      width: 8.5in;
+      height: 11in;
+      margin: 0;
+      padding: 0;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+  }
+
+  @page {
+    size: 8.5in 11in;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — FRONT
+══════════════════════════════════════════ -->
+<div class="screen-label">PAGE 1 — FRONT SIDE &nbsp;|&nbsp; Chrome → Print → Save as PDF → No margins → Background graphics ON</div>
+<div class="page" id="page-front">
+
+  <!-- Background -->
+  <div class="p1-bg"></div>
+  <div class="p1-glow"></div>
+  <div class="texture-overlay"></div>
+
+  <!-- Top bar -->
+  <div class="p1-topbar">
+    <div class="p1-topbar-logo">✂ Cut The Lock</div>
+    <div class="p1-topbar-url">www.CutTheLock.com</div>
+  </div>
+
+  <!-- Main headline -->
+  <div class="p1-headline-zone">
+    <div class="p1-eyebrow">Storage Auction Recovery</div>
+    <div class="p1-headline">Lost Something<br>In Storage?</div>
+    <div class="p1-subhead">"It might not be gone… just waiting to be found."</div>
+  </div>
+
+  <!-- Horizontal accent bar -->
+  <div class="p1-accent-bar"></div>
+
+  <!-- Center padlock with heart (SVG) -->
+  <div class="p1-lock-zone">
+    <svg class="padlock-svg" viewBox="0 0 220 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Shackle / arch -->
+      <path d="M55 118 V76 C55 42 165 42 165 76 V118" stroke="#8B7355" stroke-width="22" stroke-linecap="round" fill="none"/>
+      <!-- Shackle inner (cut detail) -->
+      <path d="M68 118 V76 C68 58 152 58 152 76 V118" stroke="#5C4A30" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <!-- Lock body -->
+      <rect x="30" y="112" width="160" height="130" rx="14" fill="#6B5030"/>
+      <!-- Lock body shading -->
+      <rect x="30" y="112" width="160" height="130" rx="14" fill="url(#lockGrad)"/>
+      <!-- Bolt/keyhole area -->
+      <circle cx="110" cy="172" r="20" fill="#3D2D10"/>
+      <!-- Heart inside keyhole -->
+      <path d="M110 184 C108 181 96 175 96 165 C96 159 102 155 110 162 C118 155 124 159 124 165 C124 175 112 181 110 184Z" fill="#CC1F1F"/>
+      <!-- Key slot -->
+      <rect x="107" y="179" width="6" height="16" rx="2" fill="#3D2D10"/>
+      <!-- Rivets -->
+      <circle cx="55" cy="135" r="6" fill="#4A3820"/>
+      <circle cx="165" cy="135" r="6" fill="#4A3820"/>
+      <circle cx="55" cy="220" r="6" fill="#4A3820"/>
+      <circle cx="165" cy="220" r="6" fill="#4A3820"/>
+      <!-- Metal shine highlight -->
+      <path d="M38 120 Q45 113 110 115 Q175 113 182 120" stroke="rgba(255,220,150,0.25)" stroke-width="2" fill="none"/>
+      <!-- Gradient defs -->
+      <defs>
+        <linearGradient id="lockGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(160,120,60,0.6)"/>
+          <stop offset="40%" stop-color="rgba(0,0,0,0)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0.5)"/>
+        </linearGradient>
+      </defs>
+      <!-- Worn texture lines -->
+      <line x1="70" y1="130" x2="72" y2="235" stroke="rgba(255,255,255,0.04)" stroke-width="1.5"/>
+      <line x1="90" y1="128" x2="91" y2="238" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <line x1="130" y1="128" x2="131" y2="238" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <line x1="150" y1="130" x2="148" y2="235" stroke="rgba(255,255,255,0.04)" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <!-- Body copy -->
+  <div class="p1-body-zone">
+    <div class="p1-body-intro">
+      When a storage unit goes unpaid, everything inside gets auctioned off — photos, keepsakes,
+      military medals, family heirlooms, irreplaceable memories. Most people never even know it happened.<br>
+      <strong>We're changing that.</strong>
+    </div>
+
+    <div class="p1-section">
+      <div class="p1-section-heading">What is Cut The Lock?</div>
+      <div class="p1-section-body">
+        We purchase abandoned storage units and carefully catalog the personal &amp; sentimental items inside.
+        Then we give the people those items belong to — the real owners — a chance to reclaim what matters most.
+        No judgment. No red tape. Just a second chance.
+      </div>
+    </div>
+  </div>
+
+  <!-- Red CTA banner -->
+  <div class="p1-cta-banner">
+    <div class="p1-cta-left">
+      <div class="p1-cta-question">Think your belongings were in a unit?</div>
+      <div class="p1-cta-sub">▶&nbsp; Submit a claim in under 60 seconds at <strong>CutTheLock.com/recover</strong></div>
+    </div>
+    <div class="p1-cta-arrow">→</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p1-footer">
+    <div class="p1-footer-url"><span>www.</span>CutTheLock<span>.com</span></div>
+    <div class="p1-footer-tagline">Recover What Matters Most</div>
+  </div>
+
+</div><!-- /page front -->
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — BACK
+══════════════════════════════════════════ -->
+<div class="screen-label" style="margin-top:40px;">PAGE 2 — BACK SIDE</div>
+<div class="page" id="page-back">
+
+  <!-- Background -->
+  <div class="p2-bg"></div>
+  <div class="texture-overlay"></div>
+
+  <!-- Top bar -->
+  <div class="p2-topbar">
+    <div class="p2-topbar-logo">✂ Cut The Lock</div>
+    <div class="p2-topbar-tagline">Storage Auction Recovery &amp; Reclaim</div>
+  </div>
+
+  <!-- HOW IT WORKS header -->
+  <div class="p2-howitworks">
+    <div class="p2-section-label">Step by Step</div>
+    <div class="p2-main-heading">How It <span>Works</span></div>
+  </div>
+
+  <!-- Steps -->
+  <div class="p2-steps">
+    <div class="p2-step">
+      <div class="p2-step-num">1</div>
+      <span class="p2-step-icon">🏪</span>
+      <div class="p2-step-title">We Purchase Units</div>
+      <div class="p2-step-desc">We legally acquire abandoned storage units at auction, ensuring a proper chain of custody for everything inside.</div>
+    </div>
+
+    <div class="p2-step">
+      <div class="p2-step-num">2</div>
+      <span class="p2-step-icon">📋</span>
+      <div class="p2-step-title">We Catalog Items</div>
+      <div class="p2-step-desc">Every personal &amp; sentimental item is carefully cataloged — photos, documents, heirlooms, and more.</div>
+    </div>
+
+    <div class="p2-step">
+      <div class="p2-step-num">3</div>
+      <span class="p2-step-icon">🔍</span>
+      <div class="p2-step-title">You Submit a Claim</div>
+      <div class="p2-step-desc">Search our database and submit a claim in under 60 seconds. No cost to search. Simple, respectful process.</div>
+    </div>
+
+    <div class="p2-step">
+      <div class="p2-step-num">4</div>
+      <span class="p2-step-icon">💛</span>
+      <div class="p2-step-title">We Reconnect You</div>
+      <div class="p2-step-desc">We verify your claim and help reunite you with your belongings. Secure, confidential, and compassionate.</div>
+    </div>
+  </div>
+
+  <!-- Quote -->
+  <div class="p2-quote-zone">
+    <span class="p2-quote-mark">"</span>
+    <div class="p2-quote-text">Not everything in storage was meant to be lost.</div>
+    <div class="p2-quote-sub">We believe memories deserve a second chance.</div>
+  </div>
+
+  <!-- Partner section -->
+  <div class="p2-partner-zone">
+    <div class="p2-partner-heading">🏢 Own a Storage Facility?</div>
+    <div class="p2-partner-body">
+      Partner with us to responsibly handle abandoned units and reduce your liability — while giving former tenants
+      a meaningful path to reclaim their belongings. We handle the catalog, the claims, and the logistics.
+    </div>
+  </div>
+
+  <!-- QR Code + CTA -->
+  <div class="p2-qr-zone">
+    <!-- QR code for https://cutthelock.com/recover -->
+    <div class="p2-qr-frame">
+      <svg viewBox="0 0 37 37" xmlns="http://www.w3.org/2000/svg" fill="#000">
+        <!-- QR code — simplified visual representation of cutthelock.com/recover -->
+        <!-- Position detection patterns -->
+        <!-- Top-left finder -->
+        <rect x="1" y="1" width="7" height="7" fill="#000"/>
+        <rect x="2" y="2" width="5" height="5" fill="#fff"/>
+        <rect x="3" y="3" width="3" height="3" fill="#000"/>
+        <!-- Top-right finder -->
+        <rect x="29" y="1" width="7" height="7" fill="#000"/>
+        <rect x="30" y="2" width="5" height="5" fill="#fff"/>
+        <rect x="31" y="3" width="3" height="3" fill="#000"/>
+        <!-- Bottom-left finder -->
+        <rect x="1" y="29" width="7" height="7" fill="#000"/>
+        <rect x="2" y="30" width="5" height="5" fill="#fff"/>
+        <rect x="3" y="31" width="3" height="3" fill="#000"/>
+        <!-- Timing patterns -->
+        <rect x="8" y="6" width="1" height="1" fill="#000"/>
+        <rect x="10" y="6" width="1" height="1" fill="#000"/>
+        <rect x="12" y="6" width="1" height="1" fill="#000"/>
+        <rect x="14" y="6" width="1" height="1" fill="#000"/>
+        <rect x="16" y="6" width="1" height="1" fill="#000"/>
+        <rect x="18" y="6" width="1" height="1" fill="#000"/>
+        <rect x="20" y="6" width="1" height="1" fill="#000"/>
+        <rect x="6" y="8" width="1" height="1" fill="#000"/>
+        <rect x="6" y="10" width="1" height="1" fill="#000"/>
+        <rect x="6" y="12" width="1" height="1" fill="#000"/>
+        <rect x="6" y="14" width="1" height="1" fill="#000"/>
+        <rect x="6" y="16" width="1" height="1" fill="#000"/>
+        <rect x="6" y="18" width="1" height="1" fill="#000"/>
+        <rect x="6" y="20" width="1" height="1" fill="#000"/>
+        <!-- Data modules (styled to look like QR) -->
+        <rect x="9" y="9" width="1" height="1" fill="#000"/>
+        <rect x="11" y="9" width="2" height="1" fill="#000"/>
+        <rect x="14" y="9" width="1" height="1" fill="#000"/>
+        <rect x="16" y="9" width="2" height="1" fill="#000"/>
+        <rect x="19" y="9" width="1" height="1" fill="#000"/>
+        <rect x="21" y="9" width="2" height="2" fill="#000"/>
+        <rect x="24" y="9" width="1" height="1" fill="#000"/>
+        <rect x="26" y="9" width="1" height="3" fill="#000"/>
+        <rect x="9" y="11" width="2" height="2" fill="#000"/>
+        <rect x="13" y="11" width="1" height="2" fill="#000"/>
+        <rect x="15" y="11" width="2" height="1" fill="#000"/>
+        <rect x="18" y="11" width="1" height="3" fill="#000"/>
+        <rect x="20" y="12" width="1" height="1" fill="#000"/>
+        <rect x="23" y="11" width="2" height="1" fill="#000"/>
+        <rect x="9" y="14" width="1" height="2" fill="#000"/>
+        <rect x="12" y="14" width="3" height="1" fill="#000"/>
+        <rect x="16" y="14" width="1" height="2" fill="#000"/>
+        <rect x="19" y="14" width="2" height="1" fill="#000"/>
+        <rect x="22" y="14" width="1" height="2" fill="#000"/>
+        <rect x="24" y="14" width="2" height="1" fill="#000"/>
+        <rect x="9" y="17" width="2" height="1" fill="#000"/>
+        <rect x="13" y="17" width="1" height="2" fill="#000"/>
+        <rect x="15" y="17" width="2" height="2" fill="#000"/>
+        <rect x="18" y="17" width="1" height="1" fill="#000"/>
+        <rect x="20" y="17" width="2" height="2" fill="#000"/>
+        <rect x="23" y="17" width="3" height="1" fill="#000"/>
+        <rect x="9" y="19" width="1" height="2" fill="#000"/>
+        <rect x="11" y="20" width="2" height="1" fill="#000"/>
+        <rect x="14" y="19" width="1" height="3" fill="#000"/>
+        <rect x="16" y="20" width="1" height="1" fill="#000"/>
+        <rect x="19" y="19" width="1" height="2" fill="#000"/>
+        <rect x="21" y="20" width="2" height="1" fill="#000"/>
+        <rect x="24" y="19" width="1" height="2" fill="#000"/>
+        <rect x="26" y="20" width="1" height="1" fill="#000"/>
+        <rect x="9" y="22" width="2" height="2" fill="#000"/>
+        <rect x="12" y="22" width="1" height="2" fill="#000"/>
+        <rect x="15" y="22" width="2" height="1" fill="#000"/>
+        <rect x="18" y="22" width="1" height="2" fill="#000"/>
+        <rect x="20" y="23" width="2" height="1" fill="#000"/>
+        <rect x="23" y="22" width="1" height="2" fill="#000"/>
+        <rect x="25" y="22" width="2" height="2" fill="#000"/>
+        <!-- Bottom-right area modules -->
+        <rect x="22" y="25" width="2" height="1" fill="#000"/>
+        <rect x="25" y="24" width="1" height="3" fill="#000"/>
+        <rect x="27" y="25" width="1" height="1" fill="#000"/>
+        <rect x="22" y="27" width="1" height="2" fill="#000"/>
+        <rect x="24" y="28" width="2" height="1" fill="#000"/>
+        <rect x="27" y="27" width="1" height="2" fill="#000"/>
+        <rect x="29" y="26" width="1" height="2" fill="#000"/>
+        <rect x="31" y="25" width="2" height="2" fill="#000"/>
+        <rect x="34" y="24" width="1" height="3" fill="#000"/>
+        <rect x="30" y="28" width="1" height="1" fill="#000"/>
+        <rect x="32" y="27" width="2" height="2" fill="#000"/>
+        <!-- Bottom area data -->
+        <rect x="8" y="25" width="1" height="1" fill="#000"/>
+        <rect x="10" y="25" width="2" height="2" fill="#000"/>
+        <rect x="13" y="25" width="1" height="3" fill="#000"/>
+        <rect x="15" y="26" width="2" height="1" fill="#000"/>
+        <rect x="18" y="25" width="1" height="2" fill="#000"/>
+        <rect x="20" y="26" width="1" height="2" fill="#000"/>
+        <rect x="8" y="28" width="2" height="1" fill="#000"/>
+        <rect x="11" y="28" width="1" height="1" fill="#000"/>
+        <rect x="16" y="28" width="1" height="1" fill="#000"/>
+        <rect x="18" y="28" width="2" height="1" fill="#000"/>
+        <!-- Alignment pattern (center-right) -->
+        <rect x="28" y="14" width="5" height="5" fill="#000"/>
+        <rect x="29" y="15" width="3" height="3" fill="#fff"/>
+        <rect x="30" y="16" width="1" height="1" fill="#000"/>
+      </svg>
+    </div>
+
+    <div class="p2-qr-text">
+      <div class="p2-qr-tagline">Scan. <span>Search.</span> Reclaim.</div>
+      <div class="p2-qr-url">cutthelock.com/recover</div>
+    </div>
+  </div>
+
+  <!-- Bottom checkmark bar -->
+  <div class="p2-bottom-bar">
+    <div class="p2-check-item">
+      <div class="p2-check-icon">✓</div>
+      No upfront cost to search
+    </div>
+    <div class="p2-check-item">
+      <div class="p2-check-icon">✓</div>
+      Simple claim process
+    </div>
+    <div class="p2-check-item">
+      <div class="p2-check-icon">✓</div>
+      Respectful &amp; secure verification
+    </div>
+  </div>
+
+</div><!-- /page back -->
+
+</body>
+</html>
