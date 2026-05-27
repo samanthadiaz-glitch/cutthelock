@@ -3325,29 +3325,20 @@ app.get('/', async (req, res) => {
     </section>
 
     <section class="how-section">
-        <div class="section-label">How It Works</div>
-        <h2>From forgotten storage unit to found treasure</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="step-icon">📦</div>
-                <h3>We Recover</h3>
-                <p>We buy out abandoned storage auction lockers across Central Texas, competing unit by unit to acquire what's been left behind and give it purpose.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">🔍</div>
-                <h3>We Revive</h3>
-                <p>Everything gets cleaned, photographed, and listed in our marketplace at thrift prices. Forgotten items find new homes. One person's abandoned unit becomes another person's treasure.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">🏷️</div>
-                <h3>We Reunite</h3>
-                <p>We catalog every sentimental and irreplaceable item — photos, documents, heirlooms — and work to return them to their original owners. If it meant something to someone, we track them down.</p>
+        <div class="section-label">What We Do</div>
+        <h2>From severed ties to reclaimed memories</h2>
+        <div class="card">
+            <div class="card-panels">
+               <img src="/images/WeRecover-Card.png" alt="Recover">
+               <img src="/images/WeRevive-Card.png" alt="Revive">
+               <img src="/images/WeReunite-Card.png" alt="Reunite">
             </div>
         </div>
         <div class="how-ctas">
             <a href="/listings" class="btn btn-primary">Browse the Marketplace</a>
             <a href="/report-lost" class="btn btn-ghost">Lost something in storage? →</a>
-        </div>
+        </div> 
+        <div class="how-script-step how-image-card how-revive-card">
     </section>
 
     <section class="difference">
