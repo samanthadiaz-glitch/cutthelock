@@ -415,6 +415,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// Ensure generated HTML surfaces share the refreshed public theme.
+// Many admin/document routes are inline templates rather than pageShell output.
+app.use((req, res, next) => {
+  const originalSend = res.send.bind(res);
+  res.send = function themedSend(body) {
+    const contentType = String(res.get('Content-Type') || '');
+    const isHtml = contentType.includes('text/html') || (typeof body === 'string' && /^\s*<!DOCTYPE html/i.test(body));
+    if (isHtml && typeof body === 'string' && !body.includes('href="/styles.css"') && body.includes('</head>')) {
+      body = body.replace('</head>', '    <link rel="stylesheet" href="/styles.css">\n</head>');
+    }
+    return originalSend(body);
+  };
+  next();
+});
+
 // ============================================================
 // LISTING VIEW TRACKING
 // ============================================================
@@ -3082,7 +3097,7 @@ function pageShell(title, bodyContent, activeNav = '', seo = {}, headExtra = '')
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
 
     <!-- Meta Pixel Code -->
@@ -3223,7 +3238,6 @@ app.get('/', async (req, res) => {
   })() : '';
 
   const html = pageShell('Every Unit Has a Story', `
-    ${featuredSection}
     <section class="hero">
         <div class="hero-content">
             <div class="hero-label">Storage Auctions Meet Recovery</div>
@@ -3249,6 +3263,8 @@ app.get('/', async (req, res) => {
             </div>
         </div>
     </section>
+
+    ${featuredSection}
 
     <section class="email-capture-section" id="homepage-subscribe">
         <div class="email-capture-inner">
@@ -3324,21 +3340,27 @@ app.get('/', async (req, res) => {
         </div>
     </section>
 
-    <section class="how-section">
-        <div class="section-label">What We Do</div>
-        <h2>From severed ties to reclaimed memories</h2>
-        <div class="card">
-            <div class="card-panels">
-               <img src="/images/WeRecover-Card.png" alt="Recover">
-               <img src="/images/WeRevive-Card.png" alt="Revive">
-               <img src="/images/WeReunite-Card.png" alt="Reunite">
+    <section class="how-section" id="how-it-works">
+        <div class="section-label">How It Works</div>
+        <h2>From forgotten storage unit to found treasure</h2>
+        <div class="how-script-list">
+            <div class="how-script-step how-image-card">
+                <img src="/we-recover-card.png" alt="We Recover abandoned storage auction lockers across Central Texas, competing unit by unit to acquire what's been left behind and give it purpose." loading="lazy">
+            </div>
+            <div class="how-script-step how-image-card how-revive-card">
+                <img src="/we-revive-card.png" alt="We Revive the contents of the unit. Everything gets cleaned, photographed, and listed in our marketplace at thrift prices. Forgotten items find new homes. One person's abandoned unit becomes another person's treasure." loading="lazy">
+            </div>
+            <div class="how-script-step">
+                <p>
+                    <img class="how-script-heading how-script-heading-wide" src="/we-reunite.png" alt="We Reunite" loading="lazy">
+                    <span class="sr-only">We Reunite </span>every sentimental and irreplaceable item — photos, documents, heirlooms — with their original owners. If it meant something to someone, we track them down.
+                </p>
             </div>
         </div>
         <div class="how-ctas">
             <a href="/listings" class="btn btn-primary">Browse the Marketplace</a>
             <a href="/report-lost" class="btn btn-ghost">Lost something in storage? →</a>
-        </div> 
-        <div class="how-script-step how-image-card how-revive-card">
+        </div>
     </section>
 
     <section class="difference">
