@@ -11,6 +11,7 @@ This project is now configured to run locally on your Mac without requiring Pols
 
 - `DATABASE_URL` - PostgreSQL connection string (required)
 - `PORT` - Server port (default: 3000)
+- `ADMIN_PASSWORD` - Admin dashboard password (defaults to `CTL2026` for local development)
 - `STRIPE_SECRET_KEY` - Optional Stripe secret key for generating payment links
 
 ## Local development

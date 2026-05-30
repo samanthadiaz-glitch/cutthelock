@@ -397,10 +397,10 @@ app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 // ADMIN AUTH MIDDLEWARE
 // ============================================================
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'CTL2026';
+const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD || 'CTL2026').trim();
 
 function requireAdmin(req, res, next) {
-  const pw = req.headers['x-admin-password'] || req.query._pw;
+  const pw = String(req.headers['x-admin-password'] || req.query._pw || '').trim();
   if (!pw || pw !== ADMIN_PASSWORD) {
     return res.status(401).json({ success: false, message: 'Unauthorized' });
   }
@@ -1426,7 +1426,7 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
 
 // Admin: verify password
 app.post('/api/admin/login', (req, res) => {
-  const { password } = req.body;
+  const password = String(req.body?.password || '').trim();
   if (!password || password !== ADMIN_PASSWORD) {
     return res.status(401).json({ success: false, message: 'Invalid password' });
   }
@@ -3951,6 +3951,14 @@ app.get('/recover', (req, res) => {
           '@type': 'Answer',
           text: "We prioritize personal and irreplaceable items: photo albums, family photos, military documents and medals, heirlooms, birth certificates, passports, children's keepsakes, and other items with sentimental value. We also catalog electronics, collectibles, and resalable items that may hold sentimental significance."
         }
+      },
+      {
+        '@type': 'Question',
+        name: 'How to get in touch with Cut The Lock',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: "The fastest way to reach Cut The Lock about lost belongings is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email hello@cutthelock.com for general questions."
+        }
       }
     ]
   };
@@ -4061,6 +4069,10 @@ app.get('/recover', (req, res) => {
             <details class="faq-item">
                 <summary class="faq-q">What types of items does Cut The Lock recover?</summary>
                 <div class="faq-a">We prioritize personal and irreplaceable items: photo albums, family photos, military documents and medals, heirlooms, birth certificates, passports, children&apos;s keepsakes, and other items with sentimental value. We also catalog electronics, collectibles, and resalable items that may hold sentimental significance.</div>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-q">How to get in touch with Cut The Lock</summary>
+                <div class="faq-a">The fastest way to reach us about lost belongings is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:hello@cutthelock.com">hello@cutthelock.com</a>.</div>
             </details>
         </div>
     </section>
@@ -7994,6 +8006,14 @@ app.get('/lost-items', (req, res) => {
           '@type': 'Answer',
           text: 'We prioritize irreplaceable personal items: family photos and photo albums, military documents and medals, birth certificates, passports, legal paperwork, children\'s keepsakes, heirlooms, and sentimental jewelry. If it has meaning to a family, it matters to us.'
         }
+      },
+      {
+        '@type': 'Question',
+        name: 'How to get in touch with Cut The Lock',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The fastest way to reach Cut The Lock about lost storage auction items is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email hello@cutthelock.com for general questions.'
+        }
       }
     ]
   };
@@ -8564,6 +8584,10 @@ app.get('/lost-items', (req, res) => {
         <details class="faq-item">
           <summary class="faq-q">What types of items can be recovered from a storage auction?</summary>
           <div class="faq-a">We prioritize family photos, military medals and documents, legal paperwork, birth certificates, passports, children's keepsakes, heirlooms, and sentimental jewelry. If it matters to a family, it matters to us.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">How to get in touch with Cut The Lock</summary>
+          <div class="faq-a">The fastest way to reach us about lost storage auction items is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:hello@cutthelock.com">hello@cutthelock.com</a>.</div>
         </details>
       </div>
     </section>
