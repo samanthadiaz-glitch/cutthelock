@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "npm run migrate && npm run seed",
+    "build": "node --check server.js",
     "migrate": "node migrate.js",
     "seed": "node seed-listings.js"
   },
