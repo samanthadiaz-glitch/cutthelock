@@ -16,12 +16,14 @@ jobs:
           chmod 600 ~/.ssh/hetzner_key
           ssh-keyscan -H ${{ secrets.HETZNER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy
-        run: |
-          ssh -i ~/.ssh/hetzner_key ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }} "
-            cd ${{ secrets.HETZNER_APP_DIR }} &&
-            git pull origin main &&
-            npm ci &&
-            npm run build &&
-            pm2 restart cutthelock
+      - run: |
+          ssh -i ~/.ssh/hetzner_key ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}
+          'cd ${{ secrets.HETZNER_APP_DIR }} &&
+          git pull origin main &&
+          npm ci &&
+          npm run build &&
+          pm2 restart cutthelock'
+
           "
+          - name: Deploy
+ 
