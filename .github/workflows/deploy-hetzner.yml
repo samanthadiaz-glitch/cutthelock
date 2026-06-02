@@ -10,14 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          echo "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/hetzner_key
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/hetzner_key
           chmod 600 ~/.ssh/hetzner_key
           if [ ! -s ~/.ssh/hetzner_key ]; then
             echo "Error: SSH key file is empty"
@@ -26,6 +23,19 @@ jobs:
           ssh-keyscan -H "${{ secrets.HETZNER_HOST }}" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-     - name: Deploy
-  run: |
-    ssh -i ~/.ssh/hetzner_key -o StrictHostKeyChecking=no ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }} 'pm2 restart cutthelock'
+      - name: Deploy
+        run: |
+          ssh \
+            -i ~/.ssh/hetzner_key \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=10 \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}" \
+            "APP_DIR='${{ secrets.HETZNER_APP_DIR }}' bash -se" <<'DEPLOY'
+          set -e
+          cd "$APP_DIR"
+          git pull origin main
+          npm ci
+          npm run build
+          pm2 restart cutthelock || pm2 start server.js --name cutthelock
+          DEPLOY
