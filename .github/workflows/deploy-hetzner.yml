@@ -14,20 +14,15 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/hetzner_key
+          echo "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/hetzner_key
           chmod 600 ~/.ssh/hetzner_key
+          if [ ! -s ~/.ssh/hetzner_key ]; then
+            echo "Error: SSH key file is empty"
+            exit 1
+          fi
           ssh-keyscan -H "${{ secrets.HETZNER_HOST }}" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Deploy
         run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "${{ secrets.HETZNER_SSH_KEY }}" | base64 -d > ~/.ssh/hetzner_key
-          chmod 600 ~/.ssh/hetzner_key
-          if [ ! -s ~/.ssh/hetzner_key ]; then
-          echo "Error: SSH key file is empty"
-          exit 1
-          fi 
-          ssh-keyscan -H "${{ secrets.HETZNER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
-          chmod 644 ~/.ssh/known_hosts
+          ssh -i ~/.ssh/hetzner_key -o StrictHostKeyChecking=no ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }} 'bash -s' < deploy.sh
