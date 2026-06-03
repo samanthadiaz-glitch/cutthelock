@@ -14,17 +14,10 @@ jobs:
     steps:
       - name: Validate secrets
         env:
-          HETZNER_HOST: 5.161.248.188
-          HETZNER_USER: deploy
-          HETZNER_SSH_KEY: -----BEGIN OPENSSH PRIVATE KEY-----
-                          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-                          QyNTUxOQAAACDpNh3i50tEEQd0AeFXANpBkUj4Zv8727/YlJoxGbifzwAAAKAFqDH5Bagx
-                          +QAAAAtzc2gtZWQyNTUxOQAAACDpNh3i50tEEQd0AeFXANpBkUj4Zv8727/YlJoxGbifzw
-                          AAAEAZyZRvy4DcFvORv8ZGzHyjUYaM81Zx0BdFteeZyMX8nek2HeLnS0QRB3QB4VcA2kGR
-                          SPhm/zvbv9iUmjEZuJ/PAAAAFmdpdGh1Yi1hY3Rpb25zLWhldHpuZXIBAgMEBQYH
-                          -----END OPENSSH PRIVATE KEY-----
-          HETZNER_APP_DIR: /var/www/cutthelock
-          password: CTL2026
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          HETZNER_APP_DIR: ${{ secrets.HETZNER_APP_DIR }}
         run: |
           test -n "$HETZNER_HOST" || { echo "Missing HETZNER_HOST"; exit 1; }
           test -n "$HETZNER_USER" || { echo "Missing HETZNER_USER"; exit 1; }
@@ -33,14 +26,8 @@ jobs:
 
       - name: Install SSH key
         env:
-          HETZNER_HOST: 5.161.248.188
-          HETZNER_SSH_KEY: -----BEGIN OPENSSH PRIVATE KEY-----
-                          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-                          QyNTUxOQAAACDpNh3i50tEEQd0AeFXANpBkUj4Zv8727/YlJoxGbifzwAAAKAFqDH5Bagx
-                          +QAAAAtzc2gtZWQyNTUxOQAAACDpNh3i50tEEQd0AeFXANpBkUj4Zv8727/YlJoxGbifzw
-                          AAAEAZyZRvy4DcFvORv8ZGzHyjUYaM81Zx0BdFteeZyMX8nek2HeLnS0QRB3QB4VcA2kGR
-                          SPhm/zvbv9iUmjEZuJ/PAAAAFmdpdGh1Yi1hY3Rpb25zLWhldHpuZXIBAgMEBQYH
-                          -----END OPENSSH PRIVATE KEY-----
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
         run: |
           mkdir -p "$HOME/.ssh"
           chmod 700 "$HOME/.ssh"
@@ -51,10 +38,9 @@ jobs:
 
       - name: Deploy
         env:
-          HETZNER_HOST: 5.161.248.188
-          HETZNER_USER: deploy
-          HETZNER_APP_DIR: /var/www/cutthelock
-          password: CTL2026
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          HETZNER_APP_DIR: ${{ secrets.HETZNER_APP_DIR }}
         run: |
           ssh \
             -i "$HOME/.ssh/hetzner_key" \
