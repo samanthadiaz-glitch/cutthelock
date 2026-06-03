@@ -71,6 +71,7 @@ jobs:
           command -v npm
           command -v pm2
 
+          git remote set-url origin https://github.com/samanthadiaz-glitch/cutthelock.git
           git pull --ff-only origin main
           npm ci
           npm run build
