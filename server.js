@@ -3345,13 +3345,13 @@ app.get('/', async (req, res) => {
         <h2>From forgotten storage unit to found treasure</h2>
         <div class="how-script-list">
             <div class="how-script-step how-image-card">
-                <img src="/how-recover-card.png?v=20260529" alt="We Recover abandoned storage auction lockers across Central Texas, competing unit by unit to acquire what's been left behind and give it purpose." loading="lazy">
+                <img src="/how-recover-card.png?v=20260602" alt="We Recover abandoned storage auction lockers across Central Texas, competing unit by unit to acquire what's been left behind and give it purpose." loading="lazy">
             </div>
             <div class="how-script-step how-image-card how-revive-card">
-                <img src="/how-revive-card.png?v=20260529" alt="We Revive the contents of the unit. Everything gets cleaned, photographed, and listed in our marketplace at thrift prices. Forgotten items find new homes. One person's abandoned unit becomes another person's treasure." loading="lazy">
+                <img src="/how-revive-card.png?v=20260602" alt="We Revive the contents of the unit. Everything gets cleaned, photographed, and listed in our marketplace at thrift prices. Forgotten items find new homes. One person's abandoned unit becomes another person's treasure." loading="lazy">
             </div>
             <div class="how-script-step how-image-card how-reunite-card">
-                <img src="/how-reunite-card.png?v=20260529" alt="We Reunite every sentimental and irreplaceable item — photos, documents, heirlooms — with their original owners. If it meant something to someone, we track them down." loading="lazy">
+                <img src="/how-reunite-card.png?v=20260602" alt="We Reunite every sentimental and irreplaceable item — photos, documents, heirlooms — with their original owners. If it meant something to someone, we track them down." loading="lazy">
             </div>
         </div>
         <div class="how-ctas">
