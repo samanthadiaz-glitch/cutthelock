@@ -12,6 +12,18 @@ jobs:
     steps:
       - name: Set up SSH
         run: |
+          if [ -z "${{ secrets.HETZNER_HOST }}" ]; then
+            echo "Error: HETZNER_HOST secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.HETZNER_USER }}" ]; then
+            echo "Error: HETZNER_USER secret is missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.HETZNER_APP_DIR }}" ]; then
+            echo "Error: HETZNER_APP_DIR secret is missing"
+            exit 1
+          fi
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/hetzner_key
@@ -31,10 +43,25 @@ jobs:
             -o StrictHostKeyChecking=accept-new \
             -o ConnectTimeout=10 \
             "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}" \
-            "APP_DIR='${{ secrets.HETZNER_APP_DIR }}' bash -se" <<'DEPLOY'
-          set -e
+            "bash -lc 'bash -se'" <<'DEPLOY'
+          set -euo pipefail
+          APP_DIR='${{ secrets.HETZNER_APP_DIR }}'
+
+          echo "Connected to $(hostname) as $(whoami)"
+          if [ ! -d "$APP_DIR" ]; then
+            echo "Error: app directory does not exist: $APP_DIR"
+            exit 1
+          fi
+          if [ ! -d "$APP_DIR/.git" ]; then
+            echo "Error: app directory is not a Git checkout: $APP_DIR"
+            exit 1
+          fi
+
           cd "$APP_DIR"
-          git pull origin main
+          command -v git
+          command -v npm
+          command -v pm2
+          git pull --ff-only origin main
           npm ci
           npm run build
           pm2 restart cutthelock || pm2 start server.js --name cutthelock
