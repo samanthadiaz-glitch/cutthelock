@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy to Hetzner
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +19,10 @@ jobs:
           HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
           HETZNER_APP_DIR: ${{ secrets.HETZNER_APP_DIR }}
         run: |
-          test -n "$HETZNER_HOST" || { echo "HETZNER_HOST is missing"; exit 1; }
-          test -n "$HETZNER_USER" || { echo "HETZNER_USER is missing"; exit 1; }
-          test -n "$HETZNER_SSH_KEY" || { echo "HETZNER_SSH_KEY is missing"; exit 1; }
-          test -n "$HETZNER_APP_DIR" || { echo "HETZNER_APP_DIR is missing"; exit 1; }
+          test -n "$HETZNER_HOST" || { echo "Missing HETZNER_HOST"; exit 1; }
+          test -n "$HETZNER_USER" || { echo "Missing HETZNER_USER"; exit 1; }
+          test -n "$HETZNER_SSH_KEY" || { echo "Missing HETZNER_SSH_KEY"; exit 1; }
+          test -n "$HETZNER_APP_DIR" || { echo "Missing HETZNER_APP_DIR"; exit 1; }
 
       - name: Install SSH key
         env:
@@ -36,7 +36,7 @@ jobs:
           ssh-keyscan -H "$HETZNER_HOST" > "$HOME/.ssh/known_hosts"
           chmod 644 "$HOME/.ssh/known_hosts"
 
-      - name: Deploy over SSH
+      - name: Deploy
         env:
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
           HETZNER_USER: ${{ secrets.HETZNER_USER }}
@@ -60,19 +60,20 @@ jobs:
             exit 1
           fi
 
-          if [ ! -d "$APP_DIR/.git" ]; then
+          cd "$APP_DIR"
+
+          if [ ! -d .git ]; then
             echo "App directory is not a Git checkout: $APP_DIR"
             exit 1
           fi
-
-          cd "$APP_DIR"
 
           command -v git
           command -v npm
           command -v pm2
 
           git remote set-url origin https://github.com/samanthadiaz-glitch/cutthelock.git
-          git pull --ff-only origin main
+          git fetch origin main
+          git reset --hard origin/main
           npm ci
           npm run build
           pm2 restart cutthelock || pm2 start server.js --name cutthelock
