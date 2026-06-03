@@ -24,6 +24,7 @@ jobs:
                           SPhm/zvbv9iUmjEZuJ/PAAAAFmdpdGh1Yi1hY3Rpb25zLWhldHpuZXIBAgMEBQYH
                           -----END OPENSSH PRIVATE KEY-----
           HETZNER_APP_DIR: /var/www/cutthelock
+          password: CTL2026
         run: |
           test -n "$HETZNER_HOST" || { echo "Missing HETZNER_HOST"; exit 1; }
           test -n "$HETZNER_USER" || { echo "Missing HETZNER_USER"; exit 1; }
@@ -53,6 +54,7 @@ jobs:
           HETZNER_HOST: 5.161.248.188
           HETZNER_USER: deploy
           HETZNER_APP_DIR: /var/www/cutthelock
+          password: CTL2026
         run: |
           ssh \
             -i "$HOME/.ssh/hetzner_key" \
