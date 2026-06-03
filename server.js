@@ -3954,7 +3954,7 @@ app.get('/recover', (req, res) => {
         name: 'How to get in touch with Cut The Lock',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: "The fastest way to reach Cut The Lock about lost belongings is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email hello@cutthelock.com for general questions."
+          text: "The fastest way to reach Cut The Lock about lost belongings is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email info@cutthelock.com for general questions."
         }
       }
     ]
@@ -4069,7 +4069,7 @@ app.get('/recover', (req, res) => {
             </details>
             <details class="faq-item">
                 <summary class="faq-q">How to get in touch with Cut The Lock</summary>
-                <div class="faq-a">The fastest way to reach us about lost belongings is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:hello@cutthelock.com">hello@cutthelock.com</a>.</div>
+                <div class="faq-a">The fastest way to reach us about lost belongings is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:info@cutthelock.com">info@cutthelock.com</a>.</div>
             </details>
         </div>
     </section>
@@ -4104,8 +4104,8 @@ app.get('/recover', (req, res) => {
     <section style="padding:0 40px 60px;max-width:780px;margin:0 auto;">
         <div style="background:rgba(212,160,23,0.07);border:1px solid rgba(212,160,23,0.22);border-radius:12px;padding:2rem 2.25rem;">
             <div class="section-label" style="margin-bottom:0.75rem;">Paid Recovery Options</div>
-            <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:0.75rem;">Want the full unit back &mdash; or first pick of your items?</h3>
-            <p style="color:rgba(255,255,255,0.7);margin-bottom:1.25rem;line-height:1.6;">Beyond free returns for personal keepsakes, we offer two paid options for former tenants: buy back the entire unit at a set fee, or cherry-pick specific items before anything goes to the public marketplace.</p>
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:0.75rem;color:var(--ink);">Want the full unit back &mdash; or first pick of your items?</h3>
+            <p style="color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">Beyond free returns for personal keepsakes, we offer two paid options for former tenants: buy back the entire unit at a set fee, or cherry-pick specific items before anything goes to the public marketplace.</p>
             <a href="/get-your-stuff-back" class="btn btn-secondary" style="font-size:0.95rem;">See Former Tenant Options &rarr;</a>
         </div>
     </section>
@@ -4134,72 +4134,72 @@ app.get('/get-your-stuff-back', (req, res) => {
         <a href="/report-lost" class="btn btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem;">Submit a Free Recovery Claim &rarr;</a>
     </div>
 
-    <section style="padding:60px 40px 40px;max-width:960px;margin:0 auto;text-align:center;">
+    <section style="padding:60px 40px 40px;max-width:1040px;margin:0 auto;text-align:center;">
         <div class="section-label">Two Paid Options</div>
-        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;margin:0.75rem 0 1rem;line-height:1.2;">Get there before the public marketplace does</h2>
-        <p style="color:rgba(255,255,255,0.7);max-width:620px;margin:0 auto 0.75rem;">These options are available <strong>before</strong> your unit&apos;s contents are sorted or listed for sale. Once items hit our public marketplace, standard pricing applies.</p>
-        <p style="color:rgba(212,160,23,0.9);font-size:0.9rem;font-weight:600;">&#8594; Start with a free recovery claim &mdash; it takes 3 minutes.</p>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;margin:0.75rem auto 1rem;line-height:1.2;max-width:820px;color:var(--ink);text-align:center;">Get there before the public marketplace does</h2>
+        <p style="color:var(--text-muted);max-width:680px;margin:0 auto 0.75rem;line-height:1.65;">These options are available <strong style="color:var(--ink);">before</strong> your unit&apos;s contents are sorted or listed for sale. Once items hit our public marketplace, standard pricing applies.</p>
+        <p style="color:var(--clay);font-size:0.95rem;font-weight:700;margin:0 auto;">&#8594; Start with a free recovery claim &mdash; it takes 3 minutes.</p>
     </section>
 
     <section style="padding:0 40px 80px;max-width:960px;margin:0 auto;">
         <div style="display:flex;flex-wrap:wrap;gap:32px;">
 
-            <div style="flex:1;min-width:280px;background:#1a1a1a;border:2px solid rgba(212,160,23,0.35);border-radius:16px;padding:2.5rem 2.25rem;">
-                <div style="display:inline-block;background:rgba(212,160,23,0.15);color:#D4A017;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:1.25rem;">Option 1</div>
-                <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;color:#fff;">Storage Locker Buy Back</h3>
-                <p style="color:rgba(255,255,255,0.75);margin-bottom:1.5rem;line-height:1.65;">Want everything in your unit returned &mdash; no sorting, no cherry-picking? We&apos;ll give it all back. You pay our original purchase price plus a 25% service fee that covers labor, transport, and supplies.</p>
-                <div style="background:rgba(0,0,0,0.4);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-                    <div style="font-size:0.78rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Pricing</div>
-                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;color:#D4A017;">Our purchase price + 25%</div>
-                    <div style="font-size:0.83rem;color:rgba(255,255,255,0.5);margin-top:0.3rem;">The 25% covers labor, gas, supplies &amp; overhead</div>
+            <div style="flex:1;min-width:280px;background:rgba(255,250,243,0.88);border:1px solid rgba(72,49,33,0.14);border-radius:16px;padding:2.5rem 2.25rem;box-shadow:0 24px 70px rgba(72,49,33,0.12);">
+                <div style="display:inline-block;background:rgba(181,111,66,0.13);color:var(--clay);font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:1.25rem;">Option 1</div>
+                <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;color:var(--ink);">Storage Locker Buy Back</h3>
+                <p style="color:var(--text-muted);margin-bottom:1.5rem;line-height:1.65;">Want everything in your unit returned &mdash; no sorting, no cherry-picking? We&apos;ll give it all back. You pay our original purchase price plus a 25% service fee that covers labor, transport, and supplies.</p>
+                <div style="background:rgba(255,255,255,0.72);border:1px solid rgba(72,49,33,0.1);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+                    <div style="font-size:0.78rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Pricing</div>
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;color:var(--clay);">Our purchase price + 25%</div>
+                    <div style="font-size:0.83rem;color:var(--text-muted);margin-top:0.3rem;">The 25% covers labor, gas, supplies &amp; overhead</div>
                 </div>
                 <div style="margin-bottom:1.75rem;">
                     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:0.55rem;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;">Your entire unit returned &mdash; nothing withheld</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;">Your entire unit returned &mdash; nothing withheld</span>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:0.55rem;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;">Available before any items are sorted or listed</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;">Available before any items are sorted or listed</span>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:10px;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;">Transparent pricing &mdash; exact amount confirmed upfront</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;">Transparent pricing &mdash; exact amount confirmed upfront</span>
                     </div>
                 </div>
                 <a href="/report-lost" class="btn btn-primary" style="width:100%;display:block;text-align:center;">Submit a Recovery Claim &rarr;</a>
-                <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-align:center;margin-top:0.75rem;">We&apos;ll reach out with your unit&apos;s buy-back price after reviewing your claim</p>
+                <p style="font-size:0.8rem;color:var(--text-soft);text-align:center;margin-top:0.75rem;">We&apos;ll reach out with your unit&apos;s buy-back price after reviewing your claim</p>
             </div>
 
-            <div style="flex:1;min-width:280px;background:#1a1a1a;border:2px solid rgba(212,160,23,0.35);border-radius:16px;padding:2.5rem 2.25rem;">
-                <div style="display:inline-block;background:rgba(212,160,23,0.15);color:#D4A017;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:1.25rem;">Option 2</div>
-                <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;color:#fff;">Previous Owner&apos;s Priority Picking</h3>
-                <p style="color:rgba(255,255,255,0.75);margin-bottom:1.5rem;line-height:1.65;">Don&apos;t need everything &mdash; just the pieces that matter? With POPP, you get <strong style="color:#fff;">first access</strong> to your unit&apos;s contents before anything is listed publicly. Choose what you want and pay resale value.</p>
-                <div style="background:rgba(0,0,0,0.4);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-                    <div style="font-size:0.78rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Pricing</div>
-                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;color:#D4A017;">Resale value per item</div>
-                    <div style="font-size:0.83rem;color:rgba(255,255,255,0.5);margin-top:0.3rem;">Same fair price items would sell for on our marketplace</div>
+            <div style="flex:1;min-width:280px;background:rgba(255,250,243,0.88);border:1px solid rgba(72,49,33,0.14);border-radius:16px;padding:2.5rem 2.25rem;box-shadow:0 24px 70px rgba(72,49,33,0.12);">
+                <div style="display:inline-block;background:rgba(181,111,66,0.13);color:var(--clay);font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:1.25rem;">Option 2</div>
+                <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;color:var(--ink);">Previous Owner&apos;s Priority Picking</h3>
+                <p style="color:var(--text-muted);margin-bottom:1.5rem;line-height:1.65;">Don&apos;t need everything &mdash; just the pieces that matter? With POPP, you get <strong style="color:var(--ink);">first access</strong> to your unit&apos;s contents before anything is listed publicly. Choose what you want and pay resale value.</p>
+                <div style="background:rgba(255,255,255,0.72);border:1px solid rgba(72,49,33,0.1);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+                    <div style="font-size:0.78rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Pricing</div>
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;color:var(--clay);">Resale value per item</div>
+                    <div style="font-size:0.83rem;color:var(--text-muted);margin-top:0.3rem;">Same fair price items would sell for on our marketplace</div>
                 </div>
                 <div style="margin-bottom:1.75rem;">
                     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:0.55rem;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;"><strong style="color:#fff;">First access</strong> &mdash; before the public marketplace opens</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;"><strong style="color:var(--ink);">First access</strong> &mdash; before the public marketplace opens</span>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:0.55rem;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;">Only pay for the items you actually want</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;">Only pay for the items you actually want</span>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:10px;">
-                        <span style="color:#D4A017;flex-shrink:0;margin-top:1px;">&#10003;</span>
-                        <span style="color:rgba(255,255,255,0.75);font-size:0.92rem;">Fair market pricing &mdash; no markup over resale value</span>
+                        <span style="color:var(--clay);flex-shrink:0;margin-top:1px;">&#10003;</span>
+                        <span style="color:var(--text-muted);font-size:0.92rem;">Fair market pricing &mdash; no markup over resale value</span>
                     </div>
                 </div>
                 <a href="/report-lost" class="btn btn-primary" style="width:100%;display:block;text-align:center;">Submit a Recovery Claim &rarr;</a>
-                <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-align:center;margin-top:0.75rem;">We&apos;ll set up your priority picking session once we locate your unit</p>
+                <p style="font-size:0.8rem;color:var(--text-soft);text-align:center;margin-top:0.75rem;">We&apos;ll set up your priority picking session once we locate your unit</p>
             </div>
 
         </div>
-        <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:0.82rem;margin-top:2rem;">Both options require a recovery claim so we can locate your unit&apos;s contents in our system. Sentimental items are still returned free &mdash; always.</p>
+        <p style="text-align:center;color:var(--text-muted);font-size:0.82rem;margin:2rem auto 0;max-width:720px;">Both options require a recovery claim so we can locate your unit&apos;s contents in our system. Sentimental items are still returned free &mdash; always.</p>
     </section>
 
     <section style="padding:0 40px 80px;max-width:780px;margin:0 auto;">
@@ -7625,6 +7625,7 @@ app.get('/story', (req, res) => {
         max-width: 780px;
         margin: 0 auto;
         padding: 120px 24px 80px;
+        color: var(--ink);
       }
       .story-eyebrow {
         font-size: 0.75rem;
@@ -7640,17 +7641,18 @@ app.get('/story', (req, res) => {
         font-weight: 700;
         line-height: 1.15;
         margin-bottom: 24px;
+        color: var(--ink);
       }
       .story-wrap h1 em {
-        color: var(--gold);
+        color: var(--clay);
         font-style: normal;
       }
       .story-lead {
         font-size: 1.2rem;
         line-height: 1.7;
-        color: rgba(255,255,255,0.85);
+        color: var(--text-muted);
         margin-bottom: 48px;
-        border-left: 3px solid var(--gold);
+        border-left: 3px solid var(--clay);
         padding-left: 20px;
       }
       .story-section {
@@ -7660,24 +7662,24 @@ app.get('/story', (req, res) => {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1.4rem;
         font-weight: 700;
-        color: var(--white);
+        color: var(--ink);
         margin-bottom: 16px;
       }
-      .story-section h2 .gold { color: var(--gold); }
+      .story-section h2 .gold { color: var(--clay); }
       .story-section p {
         font-size: 1rem;
         line-height: 1.8;
-        color: rgba(255,255,255,0.8);
+        color: var(--text-muted);
         margin-bottom: 16px;
       }
       .story-section p:last-child { margin-bottom: 0; }
       .story-divider {
         width: 60px;
         height: 3px;
-        background: var(--gold);
+        background: var(--clay);
         border-radius: 2px;
         margin: 40px 0;
-        opacity: 0.6;
+        opacity: 0.72;
       }
       .story-values {
         display: grid;
@@ -7686,10 +7688,11 @@ app.get('/story', (req, res) => {
         margin: 32px 0;
       }
       .story-value-card {
-        background: var(--gray-dark);
-        border: 1px solid rgba(212,160,23,0.2);
+        background: rgba(255, 250, 243, 0.78);
+        border: 1px solid rgba(72, 49, 33, 0.12);
         border-radius: var(--radius-lg);
         padding: 24px;
+        box-shadow: 0 18px 48px rgba(72, 49, 33, 0.08);
       }
       .story-value-card .icon {
         font-size: 1.8rem;
@@ -7700,31 +7703,33 @@ app.get('/story', (req, res) => {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1rem;
         font-weight: 700;
-        color: var(--gold);
+        color: var(--clay);
         margin-bottom: 8px;
       }
       .story-value-card p {
         font-size: 0.9rem;
         line-height: 1.6;
-        color: rgba(255,255,255,0.7);
+        color: var(--text-muted);
         margin: 0;
       }
       .story-cta-block {
-        background: var(--gray-dark);
-        border: 1px solid rgba(212,160,23,0.3);
+        background: rgba(255, 250, 243, 0.86);
+        border: 1px solid rgba(72, 49, 33, 0.12);
         border-radius: var(--radius-lg);
         padding: 40px;
         text-align: center;
         margin-top: 56px;
+        box-shadow: 0 24px 70px rgba(72, 49, 33, 0.12);
       }
       .story-cta-block h2 {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1.6rem;
         font-weight: 700;
         margin-bottom: 12px;
+        color: var(--ink);
       }
       .story-cta-block p {
-        color: rgba(255,255,255,0.7);
+        color: var(--text-muted);
         margin-bottom: 28px;
         font-size: 1rem;
         line-height: 1.6;
@@ -7743,10 +7748,10 @@ app.get('/story', (req, res) => {
         margin-top: 24px;
       }
       .story-subscribe-row input[type="email"] {
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.76);
+        border: 1px solid rgba(72, 49, 33, 0.16);
         border-radius: 6px;
-        color: var(--white);
+        color: var(--ink);
         font-family: 'DM Sans', sans-serif;
         font-size: 0.95rem;
         padding: 12px 18px;
@@ -7756,16 +7761,16 @@ app.get('/story', (req, res) => {
         transition: border-color 0.2s;
       }
       .story-subscribe-row input[type="email"]:focus {
-        border-color: var(--gold);
+        border-color: var(--clay);
       }
-      .story-subscribe-row input::placeholder { color: rgba(255,255,255,0.35); }
+      .story-subscribe-row input::placeholder { color: rgba(72, 49, 33, 0.46); }
       .story-subscribe-note {
         font-size: 0.8rem;
-        color: rgba(255,255,255,0.4);
+        color: var(--text-soft);
         margin-top: 10px;
       }
       .story-subscribe-success {
-        color: var(--gold);
+        color: var(--clay);
         font-size: 0.95rem;
         margin-top: 10px;
         display: none;
@@ -8009,7 +8014,7 @@ app.get('/lost-items', (req, res) => {
         name: 'How to get in touch with Cut The Lock',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The fastest way to reach Cut The Lock about lost storage auction items is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email hello@cutthelock.com for general questions.'
+          text: 'The fastest way to reach Cut The Lock about lost storage auction items is to submit a free recovery claim with your storage facility, unit number, auction date, and item details. You can also email info@cutthelock.com for general questions.'
         }
       }
     ]
@@ -8584,7 +8589,7 @@ app.get('/lost-items', (req, res) => {
         </details>
         <details class="faq-item">
           <summary class="faq-q">How to get in touch with Cut The Lock</summary>
-          <div class="faq-a">The fastest way to reach us about lost storage auction items is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:hello@cutthelock.com">hello@cutthelock.com</a>.</div>
+          <div class="faq-a">The fastest way to reach us about lost storage auction items is to <a href="/report-lost">submit a free recovery claim</a> with your storage facility, unit number, auction date, and item details. For general questions, email <a href="mailto:info@cutthelock.com">info@cutthelock.com</a>.</div>
         </details>
       </div>
     </section>
