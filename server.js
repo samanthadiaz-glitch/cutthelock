@@ -2979,9 +2979,14 @@ app.post('/api/admin/ai-lister/generate', requireAdmin, async (req, res) => {
       images
     } = req.body;
 
-    const cleanImages = Array.isArray(images)
-      ? images.filter(url => typeof url === 'string' && (/^data:image\//.test(url) || /^https?:\/\//.test(url))).slice(0, 4)
+    const imageCandidates = Array.isArray(images)
+      ? images.filter(url => typeof url === 'string').slice(0, 4)
       : [];
+    const cleanImages = imageCandidates.filter(url => /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(url) || /^https?:\/\//i.test(url));
+
+    if (imageCandidates.length > cleanImages.length) {
+      return res.status(400).json({ success: false, message: 'One or more photos use an unsupported image format. Upload JPG, PNG, WebP, or GIF photos.' });
+    }
 
     if (!itemName && !details && cleanImages.length === 0) {
       return res.status(400).json({ success: false, message: 'Add an item name, notes, or at least one photo.' });
@@ -3015,20 +3020,67 @@ Seller ZIP or region: ${zipCode || 'unspecified'}
 Tone: ${tone || 'clear and trustworthy'}
 Details: ${details || 'none provided'}`;
 
-    const messageContent = cleanImages.map(url => ({ type: 'image_url', image_url: { url, detail: 'high' } }));
-    messageContent.push({ type: 'text', text: userPrompt });
+    const inputContent = [
+      { type: 'input_text', text: `${systemPrompt}\n\n${userPrompt}` },
+      ...cleanImages.map(url => ({ type: 'input_image', image_url: url, detail: 'high' }))
+    ];
 
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4o',
-      max_tokens: 1400,
-      response_format: { type: 'json_object' },
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: messageContent }
-      ]
+    const listingFormat = {
+      type: 'json_schema',
+      name: 'cut_the_lock_listing',
+      strict: true,
+      schema: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['title', 'description', 'priceRange', 'shippingNotes', 'tags', 'itemSpecifics', 'photoChecklist', 'platformTips', 'safetyNotes'],
+        properties: {
+          title: { type: 'string' },
+          description: { type: 'string' },
+          priceRange: { type: 'string' },
+          shippingNotes: { type: 'string' },
+          tags: { type: 'array', items: { type: 'string' } },
+          itemSpecifics: {
+            type: 'array',
+            items: {
+              type: 'object',
+              additionalProperties: false,
+              required: ['label', 'value'],
+              properties: {
+                label: { type: 'string' },
+                value: { type: 'string' }
+              }
+            }
+          },
+          photoChecklist: { type: 'array', items: { type: 'string' } },
+          platformTips: { type: 'array', items: { type: 'string' } },
+          safetyNotes: { type: 'array', items: { type: 'string' } }
+        }
+      }
+    };
+
+    const response = await openai.responses.create({
+      model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
+      max_output_tokens: 2200,
+      input: [
+        {
+          role: 'user',
+          content: inputContent
+        }
+      ],
+      text: {
+        format: listingFormat
+      }
     });
 
-    const raw = (completion.choices[0].message.content || '').trim();
+    const raw = (response.output_text || (response.output || [])
+      .flatMap(item => item.content || [])
+      .filter(content => content.type === 'output_text')
+      .map(content => content.text || '')
+      .join('\n')).trim();
+    if (!raw) {
+      console.error('[AI Lister] Empty response:', JSON.stringify({ status: response.status, error: response.error, incomplete_details: response.incomplete_details }));
+      return res.status(500).json({ success: false, message: 'AI returned an empty listing. Try again.' });
+    }
     let parsed;
     try {
       parsed = JSON.parse(raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim());
