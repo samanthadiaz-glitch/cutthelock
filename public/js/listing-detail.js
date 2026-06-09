@@ -398,6 +398,7 @@
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
             '<span id="buy-now-label">' + initialLabel + '</span>' +
           '</button>' +
+          (hasPickup ? '<button class="btn btn-secondary btn-add-cart-detail" id="add-to-cart-btn">Add to Cart</button>' : '') +
           '<p class="buy-note" id="buy-note-text">' + initialNote + '</p>';
       } else if (item.payment_link_url) {
         actionHtml =
@@ -406,6 +407,7 @@
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
             'Buy Now — $' + parseFloat(item.price).toFixed(2) +
           '</a>' +
+          '<button class="btn btn-secondary btn-add-cart-detail" id="add-to-cart-btn">Add to Cart</button>' +
           '<p class="buy-note">Secure checkout — local pickup in the Round Rock, TX area.</p>';
       } else {
         actionHtml =
@@ -490,6 +492,17 @@
             text: item.description ? item.description.slice(0, 100) : 'Check out this item on Cut The Lock',
             url: window.location.href
           }).catch(function() {});
+        });
+      }
+
+      var addCartBtn = document.getElementById('add-to-cart-btn');
+      if (addCartBtn) {
+        addCartBtn.addEventListener('click', function() {
+          if (window.CutTheLockCart) {
+            window.CutTheLockCart.add(item.id);
+            addCartBtn.textContent = 'Added to Cart';
+            setTimeout(function() { addCartBtn.textContent = 'Add to Cart'; }, 1600);
+          }
         });
       }
 

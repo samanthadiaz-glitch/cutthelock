@@ -68,11 +68,15 @@
 
         // Buy Now button — shown for any item with a payment link
         var bestLink = item.payment_link_url || item.shipping_payment_link_url || item.local_delivery_payment_link_url;
-        var buyBtnHtml = '';
+        var actionButtonsHtml = '';
         if (!isSold && bestLink) {
           var priceLabel = parseFloat(item.price) > 0 ? ' — $' + parseFloat(item.price).toFixed(2) : '';
-          buyBtnHtml =
+          actionButtonsHtml =
             '<div class="listing-card-actions">' +
+              (item.payment_link_url ? '<button class="listing-card-cart-btn" ' +
+                'data-id="' + item.id + '">' +
+                'Add to Cart' +
+              '</button>' : '') +
               '<button class="listing-card-buy-btn" ' +
                 'data-link="' + escapeHtml(bestLink) + '" ' +
                 'data-id="' + item.id + '" ' +
@@ -95,10 +99,27 @@
               (isSold ? '<div class="listing-card-sold-label">Sold</div>' : '<div class="listing-card-condition">' + escapeHtml(item.condition || 'Good') + '</div>') +
             '</div>' +
             viewsHtml +
-            buyBtnHtml +
+            actionButtonsHtml +
           '</div>' +
         '</a>';
       }).join('');
+
+      grid.querySelectorAll('.listing-card-cart-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var id = parseInt(btn.getAttribute('data-id'), 10);
+          if (window.CutTheLockCart && id > 0) {
+            window.CutTheLockCart.add(id);
+            btn.textContent = 'Added';
+            btn.classList.add('is-added');
+            setTimeout(function() {
+              btn.textContent = 'Add to Cart';
+              btn.classList.remove('is-added');
+            }, 1600);
+          }
+        });
+      });
 
       // Wire up Buy Now buttons — stop card navigation, call checkout session endpoint
       grid.querySelectorAll('.listing-card-buy-btn').forEach(function(btn) {

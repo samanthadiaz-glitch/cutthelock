@@ -1220,6 +1220,128 @@ app.post('/api/checkout/session', async (req, res) => {
   }
 });
 
+app.post('/api/cart/items', async (req, res) => {
+  try {
+    const rawIds = Array.isArray(req.body?.ids) ? req.body.ids : [];
+    const ids = [...new Set(rawIds.map(id => parseInt(id, 10)).filter(id => id > 0))].slice(0, 50);
+
+    if (ids.length === 0) {
+      return res.json({ success: true, items: [], unavailable_ids: [] });
+    }
+
+    const result = await pool.query(
+      `SELECT id, title, price, status, category, condition, photos, payment_link_url
+       FROM listings
+       WHERE id = ANY($1::int[])`,
+      [ids]
+    );
+
+    const byId = new Map(result.rows.map(row => [row.id, row]));
+    const items = ids.map(id => byId.get(id)).filter(Boolean);
+    const availableItems = items.filter(item =>
+      ['active', 'available'].includes(item.status) &&
+      parseFloat(item.price) > 0 &&
+      item.payment_link_url
+    );
+    const availableIds = new Set(availableItems.map(item => item.id));
+    const unavailableIds = ids.filter(id => !availableIds.has(id));
+
+    res.json({ success: true, items: availableItems, unavailable_ids: unavailableIds });
+  } catch (err) {
+    console.error('Error loading cart items:', err);
+    res.status(500).json({ success: false, message: 'Failed to load cart items.' });
+  }
+});
+
+app.post('/api/cart/checkout', async (req, res) => {
+  try {
+    const rawIds = Array.isArray(req.body?.ids) ? req.body.ids : [];
+    const ids = [...new Set(rawIds.map(id => parseInt(id, 10)).filter(id => id > 0))].slice(0, 25);
+    const buyerEmail = typeof req.body?.buyer_email === 'string' ? req.body.buyer_email.trim() : '';
+
+    if (ids.length === 0) {
+      return res.status(400).json({ success: false, message: 'Your cart is empty.' });
+    }
+
+    if (!STRIPE_SECRET_KEY) {
+      return res.status(503).json({
+        success: false,
+        message: 'Stripe is not configured. Add STRIPE_SECRET_KEY in Render environment variables.'
+      });
+    }
+
+    const result = await pool.query(
+      `SELECT id, title, price, status, photos, payment_link_url
+       FROM listings
+       WHERE id = ANY($1::int[])`,
+      [ids]
+    );
+
+    const byId = new Map(result.rows.map(row => [row.id, row]));
+    const items = ids.map(id => byId.get(id)).filter(Boolean);
+    const availableItems = items.filter(item =>
+      ['active', 'available'].includes(item.status) &&
+      parseFloat(item.price) > 0 &&
+      item.payment_link_url
+    );
+
+    if (availableItems.length !== ids.length) {
+      const availableIds = new Set(availableItems.map(item => item.id));
+      return res.status(409).json({
+        success: false,
+        message: 'One or more cart items are no longer available. Refresh your cart and try again.',
+        unavailable_ids: ids.filter(id => !availableIds.has(id))
+      });
+    }
+
+    const params = new URLSearchParams();
+    params.append('mode', 'payment');
+    params.append('automatic_tax[enabled]', 'true');
+    params.append('success_url', 'https://cutthelock.com/checkout-success?session_id={CHECKOUT_SESSION_ID}');
+    params.append('cancel_url', 'https://cutthelock.com/cart');
+    params.append('metadata[checkout_mode]', 'cart');
+    params.append('metadata[cart_listing_ids]', availableItems.map(item => item.id).join(','));
+    params.append('metadata[fulfillment]', 'pickup');
+    if (buyerEmail) params.append('customer_email', buyerEmail);
+
+    availableItems.forEach((item, index) => {
+      const photos = Array.isArray(item.photos) ? item.photos : [];
+      const firstPhoto = photos.find(photo => typeof photo === 'string' && /^https?:\/\//.test(photo));
+      params.append(`line_items[${index}][price_data][currency]`, 'usd');
+      params.append(`line_items[${index}][price_data][unit_amount]`, String(Math.round(parseFloat(item.price) * 100)));
+      params.append(`line_items[${index}][price_data][product_data][name]`, (item.title || 'Storage Unit Item').slice(0, 500));
+      params.append(`line_items[${index}][price_data][product_data][description]`, 'Local pickup — Round Rock, TX area');
+      if (firstPhoto) params.append(`line_items[${index}][price_data][product_data][images][]`, firstPhoto);
+      params.append(`line_items[${index}][quantity]`, '1');
+    });
+
+    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(params.toString())
+      },
+      body: params.toString()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.error) {
+      console.error('Stripe cart checkout session error:', data.error || data);
+      return res.status(500).json({
+        success: false,
+        message: data.error?.message || 'Failed to create checkout session. Please try again.'
+      });
+    }
+
+    res.json({ success: true, url: data.url });
+  } catch (err) {
+    console.error('Error creating cart checkout session:', err);
+    res.status(500).json({ success: false, message: 'Could not start checkout. Please try again.' });
+  }
+});
+
 // ============================================================
 // CHECKOUT SUCCESS PAGE
 // ============================================================
@@ -1256,12 +1378,51 @@ app.get('/checkout-success', async (req, res) => {
       return res.redirect('/listings?error=payment_not_complete');
     }
 
+    const customerEmail = session.customer_email || session.customer_details?.email || '';
+
     // Fetch listing info from metadata
     const listingId = session.metadata?.listing_id;
+    const cartListingIds = session.metadata?.cart_listing_ids
+      ? session.metadata.cart_listing_ids.split(',').map(id => parseInt(id, 10)).filter(id => id > 0)
+      : [];
     let listingTitle = 'Your item';
     let listingPrice = session.amount_total ? (session.amount_total / 100).toFixed(2) : '0.00';
+    let isCartCheckout = cartListingIds.length > 0;
+    let cartItemRows = [];
 
-    if (listingId) {
+    if (isCartCheckout) {
+      const cartResult = await pool.query(
+        'SELECT id, title, price FROM listings WHERE id = ANY($1::int[])',
+        [cartListingIds]
+      );
+      const cartById = new Map(cartResult.rows.map(row => [row.id, row]));
+      cartItemRows = cartListingIds.map(id => cartById.get(id)).filter(Boolean);
+      listingTitle = cartItemRows.length === 1
+        ? cartItemRows[0].title
+        : `${cartItemRows.length} cart items`;
+      listingPrice = session.amount_total ? (session.amount_total / 100).toFixed(2) : cartItemRows.reduce((sum, item) => sum + parseFloat(item.price || 0), 0).toFixed(2);
+
+      await pool.query(
+        `UPDATE listings
+         SET status = 'sold'
+         WHERE id = ANY($1::int[]) AND status IN ('active', 'available')`,
+        [cartListingIds]
+      );
+
+      for (const item of cartItemRows) {
+        const existing = await pool.query(
+          'SELECT id FROM orders WHERE listing_id = $1 AND stripe_session_id = $2 LIMIT 1',
+          [item.id, sessionId]
+        );
+        if (existing.rows.length === 0) {
+          await pool.query(
+            `INSERT INTO orders (listing_id, buyer_email, stripe_session_id, amount_paid, status, fulfillment_method)
+             VALUES ($1, $2, $3, $4, 'completed', 'pickup')`,
+            [item.id, customerEmail || null, sessionId, parseFloat(item.price || 0)]
+          );
+        }
+      }
+    } else if (listingId) {
       const listingResult = await pool.query(
         'SELECT title, price FROM listings WHERE id = $1',
         [parseInt(listingId, 10)]
@@ -1276,21 +1437,30 @@ app.get('/checkout-success', async (req, res) => {
     const receiptRef = 'CTL-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' +
       (sessionId || 'XXXX').replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
 
-    const customerEmail = session.customer_email || session.customer_details?.email || '';
     const fulfillment = session.metadata?.fulfillment || 'pickup';
 
     const fulfillmentLabel = fulfillment === 'shipping' ? 'Shipping' :
       fulfillment === 'local_delivery' ? 'Local Delivery' : 'Local Pickup';
 
+    const cartRowsHtml = isCartCheckout && cartItemRows.length > 0
+      ? `<div style="margin-bottom:1rem;">${cartItemRows.map(item => `
+          <div style="display:flex;justify-content:space-between;gap:1rem;padding:0.45rem 0;border-bottom:1px solid #eee;">
+            <span>${escapeHtml(item.title)}</span>
+            <strong>$${parseFloat(item.price || 0).toFixed(2)}</strong>
+          </div>
+        `).join('')}</div>`
+      : '';
+
     res.type('html').send(pageShell('Order Confirmed!', `
       <div style=\"max-width:600px;margin:0 auto;padding:3rem 1rem;text-align:center;\">
         <div style=\"font-size:4rem;margin-bottom:1rem;\">🎉</div>
         <h1 style=\"color:#2c3e50;font-size:2rem;margin-bottom:0.5rem;\">Order Confirmed!</h1>
-        <p style=\"color:#555;font-size:1.1rem;margin-bottom:2rem;\">Thank you for your order. We're getting your item ready.</p>
+        <p style=\"color:#555;font-size:1.1rem;margin-bottom:2rem;\">Thank you for your order. We're getting ${isCartCheckout ? 'your items' : 'your item'} ready.</p>
 
         <div style=\"background:#f8f9fa;border:1px solid #e9ecef;border-radius:12px;padding:2rem;margin-bottom:2rem;text-align:left;\">
-          <div style=\"font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:0.25rem;\">Item</div>
+          <div style=\"font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:0.25rem;\">${isCartCheckout ? 'Items' : 'Item'}</div>
           <div style=\"font-size:1.1rem;font-weight:600;color:#2c3e50;margin-bottom:1rem;\">${escapeHtml(listingTitle)}</div>
+          ${cartRowsHtml}
           <div style=\"font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:0.25rem;\">Amount Paid</div>
           <div style=\"font-size:1.75rem;font-weight:700;color:#27ae60;margin-bottom:1rem;\">$${listingPrice}</div>
           <div style=\"font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:0.25rem;\">Fulfillment</div>
@@ -1310,6 +1480,7 @@ app.get('/checkout-success', async (req, res) => {
           Continue Shopping
         </a>
       </div>
+      ${isCartCheckout ? `<script>try { if (window.CutTheLockCart) window.CutTheLockCart.clear(); else localStorage.removeItem('ctl_cart_items'); } catch(e) {}</script>` : ''}
     `, 'home'));
   } catch (err) {
     console.error('Error verifying checkout session:', err);
@@ -2787,6 +2958,108 @@ Return ONLY the JSON object — no extra text, no code fences.`;
   }
 });
 
+// Admin: AI marketplace listing package generator
+app.post('/api/admin/ai-lister/generate', requireAdmin, async (req, res) => {
+  if (!openai) {
+    return res.status(503).json({ success: false, message: 'OpenAI API key not configured. Set OPENAI_API_KEY in environment variables.' });
+  }
+
+  try {
+    const {
+      marketplace,
+      category,
+      itemName,
+      brand,
+      condition,
+      details,
+      flaws,
+      targetBuyer,
+      zipCode,
+      tone,
+      images
+    } = req.body;
+
+    const cleanImages = Array.isArray(images)
+      ? images.filter(url => typeof url === 'string' && (/^data:image\//.test(url) || /^https?:\/\//.test(url))).slice(0, 4)
+      : [];
+
+    if (!itemName && !details && cleanImages.length === 0) {
+      return res.status(400).json({ success: false, message: 'Add an item name, notes, or at least one photo.' });
+    }
+
+    const systemPrompt = `You are Listwise AI for Cut The Lock, a storage-auction resale and recovery marketplace. Generate honest, searchable marketplace listings that can be published to Cut The Lock or adapted for other platforms.
+
+Return valid JSON only with these exact keys:
+{
+  "title": "searchable title under 90 chars",
+  "description": "buyer-ready listing copy",
+  "priceRange": "suggested price range with short reasoning",
+  "shippingNotes": "shipping or pickup guidance",
+  "tags": ["tag"],
+  "itemSpecifics": [{"label":"Brand","value":"Unknown"}],
+  "photoChecklist": ["photo still needed"],
+  "platformTips": ["publishing tip"],
+  "safetyNotes": ["honesty or transaction safety note"]
+}
+
+Do not invent exact specs, authenticity, warranty, retail value, or dimensions unless supplied or clearly visible. Mention uncertainty plainly.`;
+
+    const userPrompt = `Marketplace: ${marketplace || 'Cut The Lock'}
+Category: ${category || 'unspecified'}
+Item name: ${itemName || 'unspecified'}
+Brand/model: ${brand || 'unspecified'}
+Condition: ${condition || 'Good'}
+Known flaws: ${flaws || 'none provided'}
+Target buyer: ${targetBuyer || 'local marketplace shoppers'}
+Seller ZIP or region: ${zipCode || 'unspecified'}
+Tone: ${tone || 'clear and trustworthy'}
+Details: ${details || 'none provided'}`;
+
+    const messageContent = cleanImages.map(url => ({ type: 'image_url', image_url: { url, detail: 'high' } }));
+    messageContent.push({ type: 'text', text: userPrompt });
+
+    const completion = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || 'gpt-4o',
+      max_tokens: 1400,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: messageContent }
+      ]
+    });
+
+    const raw = (completion.choices[0].message.content || '').trim();
+    let parsed;
+    try {
+      parsed = JSON.parse(raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim());
+    } catch (parseErr) {
+      console.error('[AI Lister] Failed to parse response JSON:', raw);
+      return res.status(500).json({ success: false, message: 'AI returned an unexpected format. Try again.' });
+    }
+
+    res.json({
+      success: true,
+      listing: {
+        title: parsed.title || '',
+        description: parsed.description || '',
+        priceRange: parsed.priceRange || '',
+        shippingNotes: parsed.shippingNotes || '',
+        tags: Array.isArray(parsed.tags) ? parsed.tags : [],
+        itemSpecifics: Array.isArray(parsed.itemSpecifics) ? parsed.itemSpecifics : [],
+        photoChecklist: Array.isArray(parsed.photoChecklist) ? parsed.photoChecklist : [],
+        platformTips: Array.isArray(parsed.platformTips) ? parsed.platformTips : [],
+        safetyNotes: Array.isArray(parsed.safetyNotes) ? parsed.safetyNotes : []
+      }
+    });
+  } catch (err) {
+    console.error('[AI Lister] generate error:', err);
+    const msg = err.status === 429 ? 'OpenAI quota or rate limit reached. Check billing or try again later.'
+      : err.status === 401 ? 'Invalid OpenAI API key.'
+        : 'AI listing generation failed. Please try again.';
+    res.status(500).json({ success: false, message: msg });
+  }
+});
+
 // Generate a Stripe payment link for a listing.
 // Uses Samantha's own Stripe account (STRIPE_SECRET_KEY) when configured;
 // falls back to Polsia API if STRIPE_SECRET_KEY is absent.
@@ -3129,6 +3402,7 @@ function pageShell(title, bodyContent, activeNav = '', seo = {}, headExtra = '')
             <a href="/recovery-items" class="nav-link ${activeNav === 'gallery' ? 'active' : ''}">Gallery</a>
             <a href="/get-your-stuff-back" class="nav-link ${activeNav === 'options' ? 'active' : ''}">Former Tenants</a>
             <a href="/story" class="nav-link ${activeNav === 'story' ? 'active' : ''}">Our Story</a>
+            <a href="/cart" class="nav-link nav-cart-link ${activeNav === 'cart' ? 'active' : ''}"><span data-cart-label>Cart</span><span class="cart-count" data-cart-count style="display:none;">0</span></a>
         </div>
     </nav>
     ${bodyContent}
@@ -3149,6 +3423,7 @@ function pageShell(title, bodyContent, activeNav = '', seo = {}, headExtra = '')
         </div>
         <div class="footer-copy">&copy; 2026 Cut The Lock. Round Rock, TX.</div>
     </footer>
+    <script src="/js/cart.js"></script>
 </body>
 </html>`;
 }
@@ -3502,8 +3777,11 @@ app.get('/listings', (req, res) => {
                 })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    if (data.success) {
+                    if (data.success || data.already_subscribed) {
                         wrapEl.style.display = 'none';
+                        successEl.textContent = data.already_subscribed
+                            ? "You're already on our list! We'll email you when new items drop."
+                            : "You're in! We'll email you when new items drop.";
                         successEl.style.display = 'block';
                     } else {
                         errEl.textContent = data.message || 'Something went wrong.';
@@ -3527,6 +3805,57 @@ app.get('/listings', (req, res) => {
     title: 'Shop Listings — Cut The Lock',
     description: 'Browse unique finds from storage auction units in Central Texas. Furniture, electronics, collectibles and more.',
     url: 'https://cutthelock.com/listings'
+  });
+
+  res.type('html').send(html);
+});
+
+app.get('/cart', (req, res) => {
+  const html = pageShell('Your Cart', `
+    <section class="cart-page">
+      <div class="cart-header">
+        <div>
+          <div class="section-label">Marketplace Cart</div>
+          <h1>Your Cart</h1>
+          <p>Local pickup checkout for available Cut The Lock marketplace finds.</p>
+        </div>
+        <a href="/listings" class="btn btn-secondary">Continue Shopping</a>
+      </div>
+
+      <div class="cart-layout">
+        <div class="cart-items-panel">
+          <div id="cart-items" class="cart-items">
+            <div class="loading-state">Loading cart...</div>
+          </div>
+        </div>
+
+        <aside class="cart-summary">
+          <h2>Order Summary</h2>
+          <div class="cart-summary-row">
+            <span>Items</span>
+            <strong id="cart-summary-count">0</strong>
+          </div>
+          <div class="cart-summary-row">
+            <span>Pickup</span>
+            <strong>Free</strong>
+          </div>
+          <div class="cart-summary-total">
+            <span>Total</span>
+            <strong id="cart-summary-total">$0.00</strong>
+          </div>
+          <label class="cart-email-label" for="cart-email">Email for receipt (optional)</label>
+          <input type="email" id="cart-email" class="cart-email-input" placeholder="you@example.com" autocomplete="email">
+          <button class="btn btn-primary cart-checkout-btn" id="cart-checkout-btn" disabled>Checkout</button>
+          <div class="cart-error" id="cart-error" style="display:none;"></div>
+          <p class="cart-note">Checkout is for local pickup in the Round Rock, TX area. Shipping or delivery options can still be purchased from each individual item page.</p>
+        </aside>
+      </div>
+    </section>
+    <script src="/js/cart-page.js" defer></script>
+  `, 'cart', {
+    title: 'Your Cart — Cut The Lock',
+    description: 'Review your Cut The Lock marketplace cart and check out for local pickup.',
+    url: 'https://cutthelock.com/cart'
   });
 
   res.type('html').send(html);
@@ -8645,14 +8974,28 @@ app.get('/admin', (req, res) => {
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         /* ---- LISTING MANAGEMENT EXTRAS ---- */
-        .admin-tabs { display:flex; gap:0; border-bottom:1px solid var(--border-dark); padding:0 2rem; background:rgba(26,26,26,0.7); }
-        .admin-tab {
-            padding:0.75rem 1.4rem; font-size:0.9rem; font-weight:600; cursor:pointer;
-            border:none; background:none; color:var(--text-muted); font-family:'DM Sans',sans-serif;
-            border-bottom:2px solid transparent; transition:all 0.2s; margin-bottom:-1px;
+        .admin-layout {
+            display:grid;
+            grid-template-columns:240px minmax(0,1fr);
+            min-height:calc(100vh - 70px);
         }
-        .admin-tab:hover { color:var(--cream); }
-        .admin-tab.active { color:var(--rust-light); border-bottom-color:var(--rust); }
+        .admin-tabs {
+            position:sticky; top:69px; left:auto; right:auto; transform:none; margin:0; width:auto;
+            align-self:stretch; justify-self:stretch; height:calc(100vh - 69px); overflow-y:auto;
+            display:flex; flex-direction:column; gap:0.35rem;
+            justify-content:flex-start; align-items:stretch;
+            border-right:1px solid var(--border-dark);
+            border-bottom:0; border-radius:0; box-shadow:none;
+            padding:1.25rem 1rem; background:rgba(26,26,26,0.72);
+        }
+        .admin-tab {
+            width:100%; min-height:42px; padding:0.7rem 0.85rem; font-size:0.9rem; font-weight:600; cursor:pointer;
+            border:none; background:none; color:var(--text-muted); font-family:'DM Sans',sans-serif;
+            border-left:3px solid transparent; border-radius:8px; transition:all 0.2s;
+            display:flex; align-items:center; justify-content:flex-start; text-align:left; line-height:1.2;
+        }
+        .admin-tab:hover { color:var(--cream); background:rgba(250,247,244,0.05); }
+        .admin-tab.active { color:var(--rust-light); border-left-color:var(--rust); background:rgba(245,143,124,0.12); }
 
         .tab-panel { display:none; }
         .tab-panel.active { display:block; }
@@ -8884,7 +9227,7 @@ app.get('/admin', (req, res) => {
         }
         .btn-logout:hover { border-color:var(--rust); color:var(--rust); }
 
-        .admin-main { padding:2rem; }
+        .admin-main { padding:2rem; min-width:0; }
         .admin-topbar {
             display:flex; align-items:center; justify-content:space-between;
             margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap;
@@ -8902,6 +9245,29 @@ app.get('/admin', (req, res) => {
         .search-wrap .search-icon {
             position:absolute; left:0.75rem; top:50%; transform:translateY(-50%);
             color:var(--text-faint); font-size:0.9rem; pointer-events:none;
+        }
+
+        @media (max-width:900px) {
+            .admin-layout { grid-template-columns:190px minmax(0,1fr); }
+            .admin-tabs {
+                position:sticky; top:69px; height:calc(100vh - 69px); flex-direction:column; overflow-y:auto; overflow-x:hidden;
+                border-right:1px solid var(--border-dark); border-bottom:0;
+                padding:0.9rem 0.7rem;
+            }
+            .admin-tab {
+                width:100%; min-width:0; border-left:3px solid transparent; border-bottom:0;
+                text-align:left; justify-content:flex-start; font-size:0.82rem; padding:0.62rem 0.65rem;
+            }
+            .admin-tab.active { border-left-color:var(--rust); border-bottom-color:transparent; }
+            .admin-main { padding:1.25rem; }
+            .admin-header { padding:0.85rem 1rem; }
+        }
+
+        @media (max-width:620px) {
+            .admin-layout { grid-template-columns:150px minmax(0,1fr); }
+            .admin-tabs { padding:0.75rem 0.5rem; }
+            .admin-tab { font-size:0.76rem; padding:0.58rem 0.5rem; }
+            .admin-main { padding:1rem; overflow-x:auto; }
         }
 
         /* STATS ROW */
@@ -9162,22 +9528,24 @@ app.get('/admin', (req, res) => {
         </div>
     </header>
 
-    <nav class="admin-tabs">
-        <button class="admin-tab active" data-tab="claims">Recovery Claims</button>
-        <button class="admin-tab" data-tab="listings">Listings</button>
-        <button class="admin-tab" data-tab="orders">📦 Orders</button>
-        <button class="admin-tab" data-tab="units">My Units</button>
-        <button class="admin-tab" data-tab="subscribers">Subscribers</button>
-        <button class="admin-tab" data-tab="analytics">Analytics</button>
-        <button class="admin-tab" data-tab="invoices">Invoices</button>
-        <button class="admin-tab" data-tab="recovery-items">🔍 Recovery Items</button>
-        <a href="/admin/agreements" class="admin-tab" style="text-decoration:none;display:inline-flex;align-items:center;">Agreements</a>
-        <a href="/admin/agreements#payplan" class="admin-tab" style="text-decoration:none;display:inline-flex;align-items:center;">💳 Payment Plans</a>
-        <a href="/admin/payment-arrangements" class="admin-tab" style="text-decoration:none;display:inline-flex;align-items:center;">💵 Arrangements</a>
-        <a href="/admin/inventory" class="admin-tab" style="text-decoration:none;display:inline-flex;align-items:center;">📦 Inventory</a>
-    </nav>
+    <div class="admin-layout">
+        <nav class="admin-tabs">
+            <button class="admin-tab active" data-tab="claims">Recovery Claims</button>
+            <button class="admin-tab" data-tab="listings">Listings</button>
+            <button class="admin-tab" data-tab="orders">📦 Orders</button>
+            <button class="admin-tab" data-tab="units">My Units</button>
+            <button class="admin-tab" data-tab="subscribers">Subscribers</button>
+            <button class="admin-tab" data-tab="analytics">Analytics</button>
+            <button class="admin-tab" data-tab="invoices">Invoices</button>
+            <button class="admin-tab" data-tab="recovery-items">🔍 Recovery Items</button>
+            <a href="/admin/agreements" class="admin-tab" style="text-decoration:none;display:flex;align-items:center;">Agreements</a>
+            <a href="/admin/agreements#payplan" class="admin-tab" style="text-decoration:none;display:flex;align-items:center;">💳 Payment Plans</a>
+            <a href="/admin/payment-arrangements" class="admin-tab" style="text-decoration:none;display:flex;align-items:center;">💵 Arrangements</a>
+            <a href="/admin/inventory" class="admin-tab" style="text-decoration:none;display:flex;align-items:center;">📦 Inventory</a>
+            <a href="/admin/ai-lister" class="admin-tab" style="text-decoration:none;display:flex;align-items:center;">✨ AI Lister</a>
+        </nav>
 
-    <main class="admin-main">
+        <main class="admin-main">
 
         <!-- ===== CLAIMS TAB ===== -->
         <div class="tab-panel active" id="tab-claims">
@@ -9703,7 +10071,8 @@ app.get('/admin', (req, res) => {
             </div>
         </div>
 
-    </main>
+        </main>
+    </div>
 </div>
 
 <!-- INVOICE FORM MODAL -->
@@ -13502,7 +13871,7 @@ app.post('/api/subscribe', async (req, res) => {
     });
 
     if (!isNew) {
-      return res.json({ success: false, already_subscribed: true, message: "You\u2019re already on our list!" });
+      return res.json({ success: true, already_subscribed: true, message: "You\u2019re already on our list!" });
     }
 
     return res.json({ success: true });
@@ -21725,6 +22094,10 @@ app.get('/admin/payment-arrangements', (req, res) => {
 </script>
 </body>
 </html>`);
+});
+
+app.get('/admin/ai-lister', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-ai-lister.html'));
 });
 
 app.listen(port, () => {
