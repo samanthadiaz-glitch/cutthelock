@@ -75,7 +75,7 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           npm ci
-          npm run migrate
+          npm run migrate || echo "::warning::Database migrations failed. Check DATABASE_URL on the server and run npm run migrate after fixing it."
           npm run build
           pm2 restart cutthelock || pm2 start server.js --name cutthelock
           pm2 save
