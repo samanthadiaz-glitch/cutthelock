@@ -1123,7 +1123,7 @@ app.post('/api/orders/pre-checkout', async (req, res) => {
 // ============================================================
 
 app.post('/api/checkout/session', async (req, res) => {
-  const { listing_id, fulfillment, buyer_email } = req.body;
+  const { listing_id, fulfillment, buyer_email, order_id } = req.body;
   const id = parseInt(listing_id, 10);
 
   if (!id || id <= 0) {
@@ -1180,7 +1180,12 @@ app.post('/api/checkout/session', async (req, res) => {
   params.append('line_items[0][price_data][currency]', 'usd');
   params.append('line_items[0][price_data][unit_amount]', String(unitAmount));
   params.append('line_items[0][price_data][product_data][name]', listingTitle);
-  params.append('line_items[0][price_data][product_data][description]', 'Local pickup — Round Rock, TX area');
+  const fulfillmentDescription = fulfillMethod === 'shipping'
+    ? 'Shipping'
+    : fulfillMethod === 'local_delivery'
+      ? 'Local delivery'
+      : 'Local pickup — Round Rock, TX area';
+  params.append('line_items[0][price_data][product_data][description]', fulfillmentDescription);
   if (firstPhoto) {
     params.append('line_items[0][price_data][product_data][images][]', firstPhoto);
   }
@@ -1189,6 +1194,9 @@ app.post('/api/checkout/session', async (req, res) => {
   params.append('cancel_url', 'https://cutthelock.com/listings');
   params.append('metadata[listing_id]', String(id));
   params.append('metadata[fulfillment]', fulfillMethod);
+  if (order_id && parseInt(order_id, 10) > 0) {
+    params.append('metadata[order_id]', String(parseInt(order_id, 10)));
+  }
   if (email) params.append('customer_email', email);
 
   try {
@@ -1240,8 +1248,7 @@ app.post('/api/cart/items', async (req, res) => {
     const items = ids.map(id => byId.get(id)).filter(Boolean);
     const availableItems = items.filter(item =>
       ['active', 'available'].includes(item.status) &&
-      parseFloat(item.price) > 0 &&
-      item.payment_link_url
+      parseFloat(item.price) > 0
     );
     const availableIds = new Set(availableItems.map(item => item.id));
     const unavailableIds = ids.filter(id => !availableIds.has(id));
@@ -1281,8 +1288,7 @@ app.post('/api/cart/checkout', async (req, res) => {
     const items = ids.map(id => byId.get(id)).filter(Boolean);
     const availableItems = items.filter(item =>
       ['active', 'available'].includes(item.status) &&
-      parseFloat(item.price) > 0 &&
-      item.payment_link_url
+      parseFloat(item.price) > 0
     );
 
     if (availableItems.length !== ids.length) {
@@ -1382,6 +1388,8 @@ app.get('/checkout-success', async (req, res) => {
 
     // Fetch listing info from metadata
     const listingId = session.metadata?.listing_id;
+    const fulfillment = session.metadata?.fulfillment || 'pickup';
+    const orderId = parseInt(session.metadata?.order_id || '', 10);
     const cartListingIds = session.metadata?.cart_listing_ids
       ? session.metadata.cart_listing_ids.split(',').map(id => parseInt(id, 10)).filter(id => id > 0)
       : [];
@@ -1429,15 +1437,41 @@ app.get('/checkout-success', async (req, res) => {
       );
       if (listingResult.rows.length > 0) {
         listingTitle = listingResult.rows[0].title;
-        listingPrice = parseFloat(listingResult.rows[0].price).toFixed(2);
+        listingPrice = session.amount_total ? (session.amount_total / 100).toFixed(2) : parseFloat(listingResult.rows[0].price).toFixed(2);
+
+        await pool.query(
+          `UPDATE listings
+           SET status = 'sold', updated_at = NOW()
+           WHERE id = $1 AND status IN ('active', 'available')`,
+          [parseInt(listingId, 10)]
+        );
+
+        if (orderId > 0) {
+          await pool.query(
+            `UPDATE orders
+             SET status = 'completed', stripe_session_id = $1, buyer_email = COALESCE($2, buyer_email)
+             WHERE id = $3`,
+            [sessionId, customerEmail || null, orderId]
+          );
+        } else {
+          const existing = await pool.query(
+            'SELECT id FROM orders WHERE listing_id = $1 AND stripe_session_id = $2 LIMIT 1',
+            [parseInt(listingId, 10), sessionId]
+          );
+          if (existing.rows.length === 0) {
+            await pool.query(
+              `INSERT INTO orders (listing_id, buyer_email, stripe_session_id, amount_paid, status, fulfillment_method)
+               VALUES ($1, $2, $3, $4, 'completed', $5)`,
+              [parseInt(listingId, 10), customerEmail || null, sessionId, session.amount_total ? session.amount_total / 100 : parseFloat(listingPrice || 0), fulfillment]
+            );
+          }
+        }
       }
     }
 
     // Generate a receipt-like order reference from session ID suffix
     const receiptRef = 'CTL-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' +
       (sessionId || 'XXXX').replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
-
-    const fulfillment = session.metadata?.fulfillment || 'pickup';
 
     const fulfillmentLabel = fulfillment === 'shipping' ? 'Shipping' :
       fulfillment === 'local_delivery' ? 'Local Delivery' : 'Local Pickup';
@@ -3492,7 +3526,7 @@ app.get('/', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT * FROM listings
-      WHERE status IN ('active', 'available') AND payment_link_url IS NOT NULL
+      WHERE status IN ('active', 'available') AND COALESCE(price, 0) > 0
       ORDER BY created_at DESC
       LIMIT 6
     `);

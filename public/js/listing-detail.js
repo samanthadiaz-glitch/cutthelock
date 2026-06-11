@@ -318,9 +318,10 @@
 
       // Action
       var actionHtml = '';
-      var hasShipping = item.shipping_enabled && item.shipping_payment_link_url;
-      var hasLocalDelivery = item.local_delivery && item.local_delivery_payment_link_url;
-      var hasPickup = !!item.payment_link_url;
+      var canCheckout = ['active', 'available'].indexOf(item.status) !== -1 && parseFloat(item.price || 0) > 0;
+      var hasShipping = canCheckout && item.shipping_enabled;
+      var hasLocalDelivery = canCheckout && item.local_delivery;
+      var hasPickup = canCheckout;
       if (isSold) {
         actionHtml =
           '<div class="detail-sold-banner">' +
@@ -400,13 +401,13 @@
           '</button>' +
           (hasPickup ? '<button class="btn btn-secondary btn-add-cart-detail" id="add-to-cart-btn">Add to Cart</button>' : '') +
           '<p class="buy-note" id="buy-note-text">' + initialNote + '</p>';
-      } else if (item.payment_link_url) {
+      } else if (hasPickup) {
         actionHtml =
           '<div class="fulfillment-info">🏠 <strong>Local Pickup</strong> — Round Rock, TX area</div>' +
-          '<a href="' + escapeHtml(item.payment_link_url) + '" class="btn btn-buy" id="buy-now-btn" data-listing-id="' + item.id + '">' +
+          '<button class="btn btn-buy" id="buy-now-btn" data-listing-id="' + item.id + '">' +
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
             'Buy Now — $' + parseFloat(item.price).toFixed(2) +
-          '</a>' +
+          '</button>' +
           '<button class="btn btn-secondary btn-add-cart-detail" id="add-to-cart-btn">Add to Cart</button>' +
           '<p class="buy-note">Secure checkout — local pickup in the Round Rock, TX area.</p>';
       } else {
@@ -507,8 +508,8 @@
       }
 
       // ---- FULFILLMENT SELECTOR + BUY NOW LOGIC ----
-      var hasShippingOption = item.shipping_enabled && item.shipping_payment_link_url;
-      var hasLocalDeliveryOption = item.local_delivery && item.local_delivery_payment_link_url;
+      var hasShippingOption = canCheckout && item.shipping_enabled;
+      var hasLocalDeliveryOption = canCheckout && item.local_delivery;
 
       function trackBuyClick() {
         try {
@@ -636,10 +637,28 @@
                       shipping: { name: name, address: address, city: city, state: state, zip: zip }
                     }));
                   } catch(e) {}
-                  var redirectUrl = selectedFulfillment === 'local_delivery'
-                    ? item.local_delivery_payment_link_url
-                    : item.shipping_payment_link_url;
-                  window.location.href = redirectUrl;
+                  fetch('/api/checkout/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ listing_id: item.id, fulfillment: selectedFulfillment, order_id: data.order_id })
+                  })
+                  .then(function(r) {
+                    if (r.redirected) {
+                      window.location.href = r.url;
+                    } else {
+                      return r.json().then(function(checkoutData) {
+                        throw new Error(checkoutData.message || 'Failed to start checkout.');
+                      });
+                    }
+                  })
+                  .catch(function(err) {
+                    btn.disabled = false;
+                    var failLabel = selectedFulfillment === 'local_delivery'
+                      ? 'Buy Now — $' + localDeliveryTotal.toFixed(2) + ' (incl. delivery)'
+                      : 'Buy Now — $' + shippingTotal.toFixed(2) + ' (incl. shipping)';
+                    if (labelEl) labelEl.textContent = failLabel;
+                    if (errEl) { errEl.textContent = err.message || 'Connection error. Please try again.'; errEl.style.display = 'block'; }
+                  });
                 } else {
                   btn.disabled = false;
                   var failLabel = selectedFulfillment === 'local_delivery'
@@ -690,19 +709,42 @@
         }
 
       } else {
-        // Simple pickup-only or no-link: store listing ID on Buy Now click
+        // Simple pickup-only checkout.
         var buyBtn = document.getElementById('buy-now-btn');
         if (buyBtn) {
           buyBtn.addEventListener('click', function() {
             try { sessionStorage.setItem('ctl_purchase_listing_id', item.id); } catch(e) {}
             trackBuyClick();
+            var btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            fetch('/api/checkout/session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ listing_id: item.id, fulfillment: 'pickup' })
+            })
+            .then(function(r) {
+              if (r.redirected) {
+                window.location.href = r.url;
+              } else {
+                return r.json().then(function(data) {
+                  btn.disabled = false;
+                  btn.textContent = 'Buy Now — $' + parseFloat(item.price).toFixed(2);
+                  if (data.message) alert(data.message);
+                });
+              }
+            })
+            .catch(function() {
+              btn.disabled = false;
+              btn.textContent = 'Buy Now — $' + parseFloat(item.price).toFixed(2);
+            });
           });
         }
       }
 
       // Sticky mobile buy bar — appears when user scrolls past the main action section
       var primaryPaymentLink = item.payment_link_url || item.shipping_payment_link_url || item.local_delivery_payment_link_url;
-      if (!isSold && primaryPaymentLink) {
+      if (!isSold && canCheckout) {
         var stickyBar = document.getElementById('detail-sticky-buy');
         if (!stickyBar) {
           stickyBar = document.createElement('div');

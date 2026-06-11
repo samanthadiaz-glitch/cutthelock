@@ -66,17 +66,18 @@
           ? '<div class="listing-card-views">👁 ' + item.view_count + ' view' + (item.view_count !== 1 ? 's' : '') + '</div>'
           : '';
 
-        // Buy Now button — shown for any item with a payment link
+        // Buy Now button — shown for any active priced item. Checkout is created dynamically.
         var bestLink = item.payment_link_url || item.shipping_payment_link_url || item.local_delivery_payment_link_url;
+        var canCheckout = parseFloat(item.price || 0) > 0;
         var actionButtonsHtml = '';
-        if (!isSold && bestLink) {
+        if (!isSold && canCheckout) {
           var priceLabel = parseFloat(item.price) > 0 ? ' — $' + parseFloat(item.price).toFixed(2) : '';
           actionButtonsHtml =
             '<div class="listing-card-actions">' +
-              (item.payment_link_url ? '<button class="listing-card-cart-btn" ' +
+              '<button class="listing-card-cart-btn" ' +
                 'data-id="' + item.id + '">' +
                 'Add to Cart' +
-              '</button>' : '') +
+              '</button>' +
               '<button class="listing-card-buy-btn" ' +
                 'data-link="' + escapeHtml(bestLink) + '" ' +
                 'data-id="' + item.id + '" ' +
