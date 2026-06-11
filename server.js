@@ -2999,6 +2999,7 @@ Return valid JSON only with these exact keys:
   "title": "searchable title under 90 chars",
   "description": "buyer-ready listing copy",
   "priceRange": "suggested price range with short reasoning",
+  "suggestedPrice": 125,
   "shippingNotes": "shipping or pickup guidance",
   "tags": ["tag"],
   "itemSpecifics": [{"label":"Brand","value":"Unknown"}],
@@ -3007,7 +3008,7 @@ Return valid JSON only with these exact keys:
   "safetyNotes": ["honesty or transaction safety note"]
 }
 
-Do not invent exact specs, authenticity, warranty, retail value, or dimensions unless supplied or clearly visible. Mention uncertainty plainly.`;
+Use 0 for suggestedPrice if there is not enough information to suggest one. Do not invent exact specs, authenticity, warranty, retail value, or dimensions unless supplied or clearly visible. Mention uncertainty plainly.`;
 
     const userPrompt = `Marketplace: ${marketplace || 'Cut The Lock'}
 Category: ${category || 'unspecified'}
@@ -3032,11 +3033,12 @@ Details: ${details || 'none provided'}`;
       schema: {
         type: 'object',
         additionalProperties: false,
-        required: ['title', 'description', 'priceRange', 'shippingNotes', 'tags', 'itemSpecifics', 'photoChecklist', 'platformTips', 'safetyNotes'],
+        required: ['title', 'description', 'priceRange', 'suggestedPrice', 'shippingNotes', 'tags', 'itemSpecifics', 'photoChecklist', 'platformTips', 'safetyNotes'],
         properties: {
           title: { type: 'string' },
           description: { type: 'string' },
           priceRange: { type: 'string' },
+          suggestedPrice: { type: 'number' },
           shippingNotes: { type: 'string' },
           tags: { type: 'array', items: { type: 'string' } },
           itemSpecifics: {
@@ -3095,6 +3097,7 @@ Details: ${details || 'none provided'}`;
         title: parsed.title || '',
         description: parsed.description || '',
         priceRange: parsed.priceRange || '',
+        suggestedPrice: typeof parsed.suggestedPrice === 'number' ? parsed.suggestedPrice : null,
         shippingNotes: parsed.shippingNotes || '',
         tags: Array.isArray(parsed.tags) ? parsed.tags : [],
         itemSpecifics: Array.isArray(parsed.itemSpecifics) ? parsed.itemSpecifics : [],
