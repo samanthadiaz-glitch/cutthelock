@@ -75,6 +75,7 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           npm ci
+          npm run migrate
           npm run build
           pm2 restart cutthelock || pm2 start server.js --name cutthelock
           pm2 save

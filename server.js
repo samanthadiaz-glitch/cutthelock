@@ -407,6 +407,18 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function parseOptionalMoney(value, fallback = null) {
+  if (value === undefined || value === null || value === '') return fallback;
+  const parsed = parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function parseRequiredMoney(value) {
+  if (value === undefined || value === null || value === '') return null;
+  const parsed = parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 // No-cache headers for HTML
 app.use((req, res, next) => {
   if (req.accepts('html') && !req.path.startsWith('/api/')) {
@@ -1953,20 +1965,25 @@ app.post('/api/admin/listings', requireAdmin, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Title, description, price, and category are required.' });
     }
 
+    const listingPrice = parseRequiredMoney(price);
+    if (listingPrice === null) {
+      return res.status(400).json({ success: false, message: 'Enter a valid listing price.' });
+    }
+
     const listingStatus = status || 'draft';
     const sentimentalFlag = is_sentimental === true || is_sentimental === 'true' ? true : false;
     const sentimentalTier = sentimental_tier ? parseInt(sentimental_tier) : null;
     const sentimentalCat = sentimental_category || null;
     const shippingEnabled = shipping_enabled === true || shipping_enabled === 'true' ? true : false;
-    const shippingPrice = shipping_price ? parseFloat(shipping_price) : null;
+    const shippingPrice = parseOptionalMoney(shipping_price);
     const localDelivery = local_delivery === true || local_delivery === 'true' ? true : false;
-    const deliveryFeeVal = delivery_fee ? parseFloat(delivery_fee) : 20.00;
+    const deliveryFeeVal = parseOptionalMoney(delivery_fee, 20.00);
 
     const result = await pool.query(
       `INSERT INTO listings (title, description, price, category, condition, unit_origin, facility_name, facility_city, facility_state, photos, featured, status, is_sentimental, sentimental_tier, sentimental_category, payment_link_url, shipping_enabled, shipping_price, shipping_payment_link_url, local_delivery, delivery_fee, local_delivery_payment_link_url)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
        RETURNING *`,
-      [title, description, parseFloat(price), category, condition || 'good', unit_origin || null, facility_name || null, facility_city || null, facility_state || null, JSON.stringify(photos || []), featured || false, listingStatus, sentimentalFlag, sentimentalTier, sentimentalCat, payment_link_url || null, shippingEnabled, shippingPrice, shipping_payment_link_url || null, localDelivery, deliveryFeeVal, local_delivery_payment_link_url || null]
+      [title, description, listingPrice, category, condition || 'good', unit_origin || null, facility_name || null, facility_city || null, facility_state || null, JSON.stringify(photos || []), featured || false, listingStatus, sentimentalFlag, sentimentalTier, sentimentalCat, payment_link_url || null, shippingEnabled, shippingPrice, shipping_payment_link_url || null, localDelivery, deliveryFeeVal, local_delivery_payment_link_url || null]
     );
 
     const newListing = result.rows[0];
@@ -2003,13 +2020,18 @@ app.put('/api/admin/listings/:id', requireAdmin, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Title, description, price, and category are required.' });
     }
 
+    const listingPrice = parseRequiredMoney(price);
+    if (listingPrice === null) {
+      return res.status(400).json({ success: false, message: 'Enter a valid listing price.' });
+    }
+
     const sentimentalFlag = is_sentimental === true || is_sentimental === 'true' ? true : false;
     const sentimentalTier = sentimental_tier ? parseInt(sentimental_tier) : null;
     const sentimentalCat = sentimental_category || null;
     const shippingEnabled = shipping_enabled === true || shipping_enabled === 'true' ? true : false;
-    const shippingPrice = shipping_price ? parseFloat(shipping_price) : null;
+    const shippingPrice = parseOptionalMoney(shipping_price);
     const localDelivery = local_delivery === true || local_delivery === 'true' ? true : false;
-    const deliveryFeeVal = delivery_fee ? parseFloat(delivery_fee) : 20.00;
+    const deliveryFeeVal = parseOptionalMoney(delivery_fee, 20.00);
 
     // Capture previous status to detect availability transition
     const prevResult = await pool.query('SELECT status, notification_sent FROM listings WHERE id = $1', [id]);
@@ -2026,7 +2048,7 @@ app.put('/api/admin/listings/:id', requireAdmin, async (req, res) => {
         local_delivery=$20, delivery_fee=$21, local_delivery_payment_link_url=$22,
         updated_at=NOW()
        WHERE id=$23 RETURNING *`,
-      [title, description, parseFloat(price), category, condition || 'good', unit_origin || null, facility_name || null, facility_city || null, facility_state || null, JSON.stringify(photos || []), featured || false, status || 'draft', sentimentalFlag, sentimentalTier, sentimentalCat, payment_link_url || null, shippingEnabled, shippingPrice, shipping_payment_link_url || null, localDelivery, deliveryFeeVal, local_delivery_payment_link_url || null, id]
+      [title, description, listingPrice, category, condition || 'good', unit_origin || null, facility_name || null, facility_city || null, facility_state || null, JSON.stringify(photos || []), featured || false, status || 'draft', sentimentalFlag, sentimentalTier, sentimentalCat, payment_link_url || null, shippingEnabled, shippingPrice, shipping_payment_link_url || null, localDelivery, deliveryFeeVal, local_delivery_payment_link_url || null, id]
     );
 
     if (result.rows.length === 0) return res.status(404).json({ success: false, message: 'Listing not found.' });
