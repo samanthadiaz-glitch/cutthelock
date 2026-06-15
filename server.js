@@ -1201,6 +1201,7 @@ app.post('/api/checkout/session', async (req, res) => {
   if (firstPhoto) {
     params.append('line_items[0][price_data][product_data][images][]', firstPhoto);
   }
+  params.append('line_items[0][quantity]', '1');
   params.append('automatic_tax[enabled]', 'true');
   params.append('success_url', 'https://cutthelock.com/checkout-success?session_id={CHECKOUT_SESSION_ID}');
   params.append('cancel_url', 'https://cutthelock.com/listings');
